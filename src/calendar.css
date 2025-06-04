@@ -1,0 +1,97 @@
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  padding: 0;
+  margin: 0;
+}
+
+#banner {
+  margin: 0;
+  padding: 0px;
+  border-bottom: 1px solid #dee2e6;
+  min-height: 96px;
+  line-height:0
+}
+
+#banner img {
+  padding: 8px;
+  background-color: #12294b;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-bottom: 96px solid transparent;
+  border-left: 45px solid #12294b; /* 45-degree triangle */
+  display: inline-block;
+}
+
+.banner-title {
+  display: inline-block;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 32px;
+  font-weight: 700;
+  vertical-align:top;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+
+#main {
+  margin: 10px;
+}
+
+#filters {
+  border-bottom: 1px solid #dee2e6;
+  padding: 10px;
+}
+
+.checkbox-venue {
+  padding-right: 12px;
+  border-radius: 4px;
+}
+
+.checkbox-venue:has(.Mui-checked) {
+  background-color: #f1f1f1;
+}
+
+
+
+
+.rbc-month-row {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.rbc-row-content-scroll-container {
+  min-height: 80px;
+}
+
+.rbc-event {
+  min-height: 91px !important;
+}
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
+}
