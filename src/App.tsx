@@ -107,16 +107,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const uid : string = Date.now().toString();
 
-  const [isVisibleSteBernadette, setIsVisibleSteBernadette] = useState<boolean>(true);
-  const [isVisibleMoussette, setIsVisibleMoussette] = useState<boolean>(true);
-  const [isVisibleFontaine, setIsVisibleFontaine] = useState<boolean>(true);
-  const [isVisibleBosco, setIsVisibleBosco] = useState<boolean>(true);
-  const [isVisibleJolicoeur, setIsVisibleJolicoeur] = useState<boolean>(true);
+  const [isVisibleLongueAllee, setIsVisibleLongueAllee] = useState<boolean>(true);
+  const [isVisibleThibault, setIsVisibleThibault] = useState<boolean>(true);
+  const [isVisiblePerkins, setIsVisiblePerkins] = useState<boolean>(true);
+  const [isVisiblePerkinsCage, setIsVisiblePerkinsCage] = useState<boolean>(true);
 
   useEffect(() => {
     const loadCSV = async () => {
       try {
-        const response = await fetch('/calendrier/games.csv?' + uid);
+        const response = await fetch('/calendrier-vdm/games.csv?' + uid);
         if (!response.ok) throw new Error('Failed to fetch CSV');
 
         const csvText = await response.text();
@@ -150,7 +149,7 @@ function App() {
         });
 
         // Practices
-        const practicesResponse = await fetch('/calendrier/practices.csv?' + uid);
+        const practicesResponse = await fetch('/calendrier-vdm/practices.csv?' + uid);
         if (!practicesResponse.ok) throw new Error('Failed to fetch CSV');
 
         const practicesCsvText = await practicesResponse.text();
@@ -198,18 +197,16 @@ function App() {
 
   // When a venue is checked or unchecked
   useEffect(() => {
-    setFilteredEvents(events.filter(e => (!isVisibleSteBernadette ? e.venue != venueSteBernadette : e)
-      && (!isVisibleMoussette ? e.venue != venueMoussette : e)
-      && (!isVisibleFontaine ? e.venue != venueFontaine : e)
-      && (!isVisibleBosco ? e.venue != venueBosco : e)
-      && (!isVisibleJolicoeur ? e.venue != venueJolicoeur : e)
+    setFilteredEvents(events.filter(e => (!isVisibleLongueAllee ? e.venue != venueLongueAllee : e)
+      && (!isVisibleThibault ? e.venue != venueThibault : e)
+      && (!isVisiblePerkins ? e.venue != venuePerkins : e)
+      && (!isVisiblePerkinsCage ? e.venue != venuePerkinsCage : e)
       ));
   }, [
-    isVisibleSteBernadette,
-    isVisibleMoussette,
-    isVisibleFontaine,
-    isVisibleBosco,
-    isVisibleJolicoeur
+    isVisibleLongueAllee,
+    isVisibleThibault,
+    isVisiblePerkins,
+    isVisiblePerkinsCage
   ]);
 
   const eventTypeGame: string ="game";
@@ -218,26 +215,21 @@ function App() {
   const colorGame: string ="#fefefe";
   const colorPractice: string ="#e6f2ff";
 
-  const colorSteBernadette: string ="#0066cc";
-  const colorMoussette: string = "#339933";
-  const colorFontaine: string = "#9900ff";
-  const colorBosco: string = "#cc3300";
-  const colorJolicoeur: string = "#ffc107";
+  const colorLongueAllee: string ="#0066cc";
+  const colorThibault: string = "#339933";
+  const colorPerkins: string = "#9900ff";
+  const colorPerkinsCage: string = "#cc3300";
 
-  const venueSteBernadette: string = "Parc Ste-Bernadette";
-  const venueMoussette: string = "Parc Moussette";
-  const venueFontaine: string = "Parc Fontaine";
-  const venueBosco: string = "Parc St-Jean-De-Bosco - Parc St-Jean-Bosco";
-  const venueJolicoeur: string = "Parc Jolicoeur";
- 
+  const venueLongueAllee: string = "Parc Longue-Allée - Terrain Longue-Allée";
+  const venueThibault: string = "Parc Thibault - Terrain Thibault";
+  const venuePerkins: string = "Parc J. A. Perkins - Terrain J. A. Perkins";
+  const venuePerkinsCage: string = "Parc J. A. Perkins - Cage";
 
   const venueColors: Record<string, string> = {
-    "Parc Allen - Allen": "#4caf50",
-    "Parc Moussette": colorMoussette,
-    "Parc Ste-Bernadette": colorSteBernadette,
-    "Parc Fontaine": colorFontaine,
-    "Parc St-Jean-De-Bosco - Parc St-Jean-Bosco": colorBosco,
-    "Parc Jolicoeur": colorJolicoeur,
+    "Parc Longue-Allée - Terrain Longue-Allée": colorLongueAllee,
+    "Parc Thibault - Terrain Thibault": colorThibault,
+    "Parc J. A. Perkins - Terrain J. A. Perkins": colorPerkins,
+    "Parc J. A. Perkins - Cage": colorPerkinsCage,
     "Default": "#000",
   };
 
@@ -319,25 +311,21 @@ function App() {
     <div>
       <div id="filters">
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
-          <FormControlLabel label="Ste-Bernadette" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSteBernadette(e.target.checked)}
-              sx={{ color: colorSteBernadette, '&.Mui-checked': { color: colorSteBernadette, class: 'checkbox-venue-checked' } }} />}
+          <FormControlLabel label="Longue-Allée" className="checkbox-venue"
+            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleLongueAllee(e.target.checked)}
+              sx={{ color: colorLongueAllee, '&.Mui-checked': { color: colorLongueAllee, class: 'checkbox-venue-checked' } }} />}
           />
-          <FormControlLabel label="Moussette" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleMoussette(e.target.checked)}
-              sx={{ color: colorMoussette, '&.Mui-checked': { color: colorMoussette, class: 'checkbox-venue-checked' } }} />}
+          <FormControlLabel label="Thibault" className="checkbox-venue"
+            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleThibault(e.target.checked)}
+              sx={{ color: colorThibault, '&.Mui-checked': { color: colorThibault, class: 'checkbox-venue-checked' } }} />}
           />
-          <FormControlLabel label="Fontaine" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleFontaine(e.target.checked)}
-            sx={{ color: colorFontaine, '&.Mui-checked': { color: colorFontaine, class: 'checkbox-venue-checked' } }} />}
+          <FormControlLabel label="Perkins" className="checkbox-venue"
+            control={<Checkbox defaultChecked onChange={(e) => setIsVisiblePerkins(e.target.checked)}
+            sx={{ color: colorPerkins, '&.Mui-checked': { color: colorPerkins, class: 'checkbox-venue-checked' } }} />}
           />
-          <FormControlLabel label="St-Jean-Bosco" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleBosco(e.target.checked)}
-            sx={{ color: colorBosco, '&.Mui-checked': { color: colorBosco, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Jolicoeur" className="checkbox-venue"
-            control={<Checkbox defaultChecked  onChange={(e) => setIsVisibleJolicoeur(e.target.checked) }
-            sx={{ color: colorJolicoeur, '&.Mui-checked': { color: colorJolicoeur, class: 'checkbox-venue-checked' } }} />}
+          <FormControlLabel label="Perkins (cage)" className="checkbox-venue"
+            control={<Checkbox defaultChecked onChange={(e) => setIsVisiblePerkinsCage(e.target.checked)}
+            sx={{ color: colorPerkinsCage, '&.Mui-checked': { color: colorPerkinsCage, class: 'checkbox-venue-checked' } }} />}
           />
         </FormGroup>
       </div>
