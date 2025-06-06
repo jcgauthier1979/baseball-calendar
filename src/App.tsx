@@ -92,7 +92,9 @@ function filterTeamName(name : string) {
 
 function filterVenue(name : string) {
   // Remove venue specific prefix
-  name = name.replace("St-Jean-De-Bosco - Parc ", "")
+  name = name.replace(" - Terrain Thibault", "")
+  name = name.replace(" - Terrain Longue-Allée", "")
+  name = name.replace(" - Terrain J. A. Perkins", "")
   // Remove generic prefix
   name = name.replace("Parc ", "")
   return name;
