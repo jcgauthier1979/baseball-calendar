@@ -14,14 +14,14 @@ body {
 
 #banner img {
   padding: 8px;
-  background-color: #12294b;
+  background-color: #fe1229;
 }
 
 .triangle {
   width: 0;
   height: 0;
   border-bottom: 96px solid transparent;
-  border-left: 45px solid #12294b; /* 45-degree triangle */
+  border-left: 45px solid #fe1229; /* 45-degree triangle */
   display: inline-block;
 }
 
