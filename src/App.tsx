@@ -293,7 +293,7 @@ function App() {
     <div>
       <div id="filters">
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
-          <FormControlLabel label="Russel Martin" className="checkbox-venue"
+          <FormControlLabel label="Russell Martin" className="checkbox-venue"
             control={<Checkbox defaultChecked onChange={(e) => setIsVisibleRusselMartin(e.target.checked)}
               sx={{ color: colorRusselMartin, '&.Mui-checked': { color: colorRusselMartin, class: 'checkbox-venue-checked' } }} />}
           />
