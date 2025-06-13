@@ -25,6 +25,7 @@ type CsvRow = {
   "End Time": string;
   "Home Team Name": string;
   "Away Team Name": string;
+  "Name": string;
   Venue: string;
   Status: string;
   Comments: string;
@@ -53,6 +54,7 @@ interface CalendarEvent {
   allDay?: boolean;
   homeTeam: string;
   awayTeam: string;
+  name: string;
   venue: string;
   resource?: {
     status: string;
@@ -138,6 +140,7 @@ function App() {
             title: `${row["Home Team Name"]}\n${row["Away Team Name"]}`,
             homeTeam: filterTeamName(row["Home Team Name"]),
             awayTeam: filterTeamName(row["Away Team Name"]),
+            name: row["Name"],
             start: start,
             end: end,
             allDay: false,
@@ -172,6 +175,7 @@ function App() {
             title: filterTeamName(row["Team Names"]),
             homeTeam: filterTeamName(row["Team Names"]),
             awayTeam: "",
+            name: row["Name"],
             start: start,
             end: end,
             allDay: false,
@@ -274,6 +278,12 @@ function App() {
           <br />
         </>
       )} */}
+      {event.name && event.name.trim() !== '' && (
+        <>
+          <span dangerouslySetInnerHTML={{__html: event.name}} />
+          <br />
+        </>
+      )}
       {event.awayTeam && event.awayTeam.trim() !== '' && (
         <>
           <span dangerouslySetInnerHTML={{__html: event.awayTeam}} />
