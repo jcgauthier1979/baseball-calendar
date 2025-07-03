@@ -54,8 +54,21 @@ body {
   background-color: #f1f1f1;
 }
 
+#filters .material-icons-outlined {
 
+  display: inline-flex;
+}
 
+#filters .venue-group {
+  text-align: center;
+}
+
+#filters .venue-name {
+  padding-right: 28px;
+  padding-bottom: 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
 
 .rbc-month-row {
   height: auto !important;
@@ -70,7 +83,34 @@ body {
   min-height: 91px !important;
 }
 
+.loading {
+  text-align: center;
+  margin-top: 32px;
+}
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
 
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+
+.error-icon {
+  color:#FF3D00;
+  font-size: 64px;
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 
