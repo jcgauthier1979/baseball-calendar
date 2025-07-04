@@ -29,6 +29,10 @@ export function filterVenue(name : string) {
     name = name.substring(pos + 5);
   }
 
+  // Other
+  name = name.replace(" - Terrain Baseball", "");
+  name = name.replace(" - Cage frappeurs", " (Cage)");
+
   // Remove timeslot suffix
   name = name.replace(Consts.TIMESLOT_EVENT_TYPE, "");
   return name;
