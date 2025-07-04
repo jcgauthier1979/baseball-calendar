@@ -1,108 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, dateFnsLocalizer, Views, type View } from "react-big-calendar";
+import { Calendar, Views, type View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { parse, startOfWeek, getDay, format } from "date-fns";
-import frCA from "date-fns/locale/fr-CA";
-import Papa from "papaparse";
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel, FormGroup } from "@mui/material";
-
-const locales = {
-  "fr-CA": frCA
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: () => startOfWeek(new Date(), { weekStartsOn: 0 }),
-  getDay,
-  locales
-});
-
-type CsvRow = {
-  Date: string;
-  "Start Time": string;
-  "End Time": string;
-  "Home Team Name": string;
-  "Away Team Name": string;
-  Venue: string;
-  Status: string;
-  Comments: string;
-};
-
-type PracticesCsvRow = {
-  "Team IDs": string;
-  "Team Names": string;
-  "Team Registry IDs": string;
-  "Name": string;
-  Type: string,
-  Venue: string;
-  Date: string;
-  "Start Time": string;
-  "End Time": string;
-  Status: string;
-  Comments: string;
-};
-
-interface CalendarEvent {
-  type: string;
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  allDay?: boolean;
-  homeTeam: string;
-  awayTeam: string;
-  venue: string;
-  resource?: {
-    status: string;
-    comments: string;
-  };
-}
-
-const messages = {
-  previous: 'Précédant',
-  next: 'Suivant',
-  today: 'Aujourd\'hui',
-  month: 'Mois',
-  week: 'Semaine',
-  day: 'Jour',
-  agenda: 'Agenda',
-};
-
-function filterTeamName(name : string) {
-  var separatorPos = name.indexOf(",");
-  var secondName = "";
-
-  if (separatorPos > 0) {
-    var posSecondTeam = name.indexOf(" - Masculin", separatorPos);
-    if (posSecondTeam > 0) {
-      secondName = "<br />" + name.substring(separatorPos + 1, posSecondTeam);
-    }
-  }
-  
-  var pos = name.indexOf(" - Masculin");
-  if (pos > 0) {
-    name = name.substring(0, pos);
-  }
-
-  name = name.replace(",", "")
-  return `${name}${secondName}`;
-}
-
-function filterVenue(name : string) {
-  // Remove venue specific prefix
-  name = name.replace("St-Jean-De-Bosco - Parc ", "")
-  name = name.replace("Parc Aydelu - Terrain Baseball", "Parc Aydelu")
-  name = name.replace("Parc Aydelu - Cage frappeurs", "Parc Aydelu (Cage)")
-  // Remove generic prefix
-  name = name.replace("Parc ", "")
-  return name;
-}
+import * as Consts from "./utils/consts";
+import * as Types from "./utils/types";
+import * as Helpers from "./utils/helpers";
+import * as Data from "./utils/data";
 
 function App() {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<CalendarEvent[]>([]);
+  const [events, setEvents] = useState<Types.CalendarEvent[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Types.CalendarEvent[]>([]);
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState<boolean>(true);
@@ -115,90 +23,55 @@ function App() {
   const [isVisibleMoussette, setIsVisibleMoussette] = useState<boolean>(false);
   const [isVisibleBosco, setIsVisibleBosco] = useState<boolean>(false);
 
+  const [isVisibleSteBernadetteTimeslot, setIsVisibleSteBernadetteTimeslot] = useState<boolean>(false);
+  const [isVisibleMoussetteTimeslot, setIsVisibleMoussetteTimeslot] = useState<boolean>(false);
+  const [isVisibleFontaineTimeslot, setIsVisibleFontaineTimeslot] = useState<boolean>(false);
+  const [isVisibleBoscoTimeslot, setIsVisibleBoscoTimeslot] = useState<boolean>(false);
+  const [isVisibleJolicoeurTimeslot, setIsVisibleJolicoeurTimeslot] = useState<boolean>(false);
+
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
+
   useEffect(() => {
-    const loadCSV = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch('/calendrier-desportages/games.csv?' + uid);
-        if (!response.ok) throw new Error('Failed to fetch CSV');
+        setLoadingMessage("Chargement des matchs...");
+        const parsedGameEvents = await Data.loadEvents("games.csv", uid, Consts.GAME_EVENT_TYPE);
+        setLoadingMessage("Chargement des pratiques...");
+        const parsedPracticesEvents = await Data.loadEvents("practices.csv", uid, Consts.PRACTICE_EVENT_TYPE);
 
-        const csvText = await response.text();
-        const parsed =  Papa.parse<CsvRow>(csvText, {
-          header: true
-        });
+        var parsedGameEventsMap = new Map(parsedGameEvents.map(g => [g.uid, g]));
+        var parsedPracticesEventsMap = new Map(parsedPracticesEvents.map(p => [p.uid, p]));
 
-        if (parsed.errors.length) {
-          throw new Error(parsed.errors.map(e => e.message).join(', '));
-        }
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_STEBERNADETTE)}...`);
+        const stebernadetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_STEBERNADETTE, "timeslots-stebernadette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
-        const parsedGameEvents: CalendarEvent[] = parsed.data.map((row, index) => {
-          const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-          const end = new Date(`${row.Date}T${row["End Time"]}:00`);
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_MOUSSETTE)}...`);
+        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
-          return {
-            type: "game",
-            id: index,
-            title: `${row["Home Team Name"]}\n${row["Away Team Name"]}`,
-            homeTeam: filterTeamName(row["Home Team Name"]),
-            awayTeam: filterTeamName(row["Away Team Name"]),
-            start: start,
-            end: end,
-            allDay: false,
-            venue: row["Venue"],
-            resource: {
-              status: row.Status,
-              comments: row.Comments
-            }
-          };
-        });
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_FONTAINE)}...`);
+        const fontaineTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_FONTAINE, "timeslots-fontaine.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
-        // Practices
-        const practicesResponse = await fetch('/calendrier-desportages/practices.csv?' + uid);
-        if (!practicesResponse.ok) throw new Error('Failed to fetch CSV');
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_BOSCO)}...`);
+        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
-        const practicesCsvText = await practicesResponse.text();
-        const parsedPractices =  Papa.parse<PracticesCsvRow>(practicesCsvText, {
-          header: true
-        });
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_JOLICOEUR)}...`);
+        const jolicoeurTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_JOLICOEUR, "timeslots-jolicoeur.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
-        if (parsedPractices.errors.length) {
-          throw new Error(parsedPractices.errors.map(e => e.message).join(', '));
-        }
+        const timeslotsEvents = ([...stebernadetteTimeslotsEvents, ...moussetteTimeslotsEvents, ...fontaineTimeslotsEvents, ...boscoTimeslotsEvents, ...jolicoeurTimeslotsEvents]);
+        setEvents([...parsedGameEvents, ...parsedPracticesEvents, ...timeslotsEvents]);
 
-        const parsedPracticesEvents: CalendarEvent[] = parsedPractices.data.map((row, index) => {
-          const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-          const end = new Date(`${row.Date}T${row["End Time"]}:00`);
-
-          return {
-            type: "practice",
-            id: index,
-            title: filterTeamName(row["Team Names"]),
-            homeTeam: filterTeamName(row["Team Names"]),
-            awayTeam: "",
-            start: start,
-            end: end,
-            allDay: false,
-            venue: row["Venue"],
-            resource: {
-              status: row.Status,
-              comments: row.Comments
-            }
-          };
-        });
-
-        setEvents([...parsedGameEvents, ...parsedPracticesEvents]);
-        setFilteredEvents(
-          [...parsedGameEvents, ...parsedPracticesEvents]
-          .filter(e => e.venue != venueMoussette && e.venue != venueBosco)
+        setLoadingMessage("Chargement du calendrier...");
+        setFilteredEvents([...parsedGameEvents, ...parsedPracticesEvents]
         );
       } catch (err: any) {
-        console.error('CSV load error:', err);
-        setError(err.message || 'Unknown error');
+        console.error('Erreur de chargement : ', err);
+        setError(err.message || 'Erreur inconnue');
       } finally {
         setLoading(false);
       }
     };
 
-    loadCSV();   
+    loadData();   
   }, []);
 
   // When a venue is checked or unchecked
@@ -214,40 +87,33 @@ function App() {
     isVisibleAydelu,
     isVisibleAydeluCage,
     isVisibleMoussette,
-    isVisibleBosco
+    isVisibleFontaine,
+    isVisibleBosco,
+    isVisibleJolicoeur,
+    isVisibleSteBernadetteTimeslot,
+    isVisibleMoussetteTimeslot,
+    isVisibleFontaineTimeslot,
+    isVisibleBoscoTimeslot,
+    isVisibleJolicoeurTimeslot
   ]);
 
-  const eventTypeGame: string ="game";
-  //const eventTypePractice: string ="practice";
-
-  const colorGame: string ="#fefefe";
-  const colorPractice: string ="#e6f2ff";
-
-  const colorAllen: string ="#0066cc";
-  const colorAydelu: string = "#339933";
-  const colorAydeluCage: string = "#ffc107";
-  const colorMoussette: string = "#9900ff";
-  const colorBosco: string = "#cc3300";
-
-  const venueAllen: string = "Parc Allen - Allen";
-  const venueAydelu: string = "Parc Aydelu - Terrain Baseball";
-  const venueAydeluCage: string = "Parc Aydelu - Cage frappeurs";
-  const venueMoussette: string = "Parc Moussette";
-  const venueBosco: string = "Parc St-Jean-De-Bosco - Parc St-Jean-Bosco";
- 
-
-  const venueColors: Record<string, string> = {
-    "Parc Allen - Allen": colorAllen,
-    "Parc Moussette": colorMoussette,
-    "Parc Aydelu - Terrain Baseball": colorAydelu,
-    "Parc Aydelu - Cage frappeurs": colorAydeluCage,
-    "Parc St-Jean-De-Bosco - Parc St-Jean-Bosco": colorBosco,
-    "Default": "#000",
-  };
-
   const eventPropGetter = (event: any) => {
-    let borderLeftColor = venueColors[event.venue] || venueColors.Default;
-    let backgroundColor = event.type == eventTypeGame ?  colorGame : colorPractice;
+    let borderLeftColor = Consts.VENUE_COLORS.get(event.venue) || Consts.VENUE_COLORS.get("");
+    let backgroundColor = event.type == Consts.GAME_EVENT_TYPE ?  Consts.COLOR_GAME : Consts.COLOR_PRACTICE;
+
+    switch(event.type) {
+      case Consts.GAME_EVENT_TYPE:
+        backgroundColor = Consts.COLOR_GAME;
+        break;
+      case Consts.PRACTICE_EVENT_TYPE:
+        backgroundColor = Consts.COLOR_PRACTICE;
+        break;
+      default:
+        backgroundColor = Consts.COLOR_TIMESLOT;
+    }
+
+    type BorderStyle = | 'dotted' | 'solid';
+    let borderStyle: BorderStyle  = event.type == Consts.TIMESLOT_EVENT_TYPE ? 'dotted' : 'solid';
   
     return {
       style: {
@@ -255,42 +121,41 @@ function App() {
         borderRadius: '5px',
         color: '#333',
         borderLeft: `15px solid ${borderLeftColor}`,
-        borderTop: `1px solid ${borderLeftColor}`,
-        borderRight: `1px solid ${borderLeftColor}`,
-        borderBottom: `1px solid ${borderLeftColor}`,
+        borderTop: `1px ${borderStyle} ${borderLeftColor}`,
+        borderRight: `1px ${borderStyle} ${borderLeftColor}`,
+        borderBottom: `1px ${borderStyle} ${borderLeftColor}`,
         display: 'block',
       },
     };
   };
 
-  const EventComponent: React.FC<{ event: CalendarEvent }> = ({ event }) => (
+  const EventComponent: React.FC<{ event: Types.CalendarEvent }> = ({ event }) => (
     <>
-    
-      {/* {event.type == 'game' && (
+      {event.type == 'timeslot' && (
         <>
-          <strong>MATCH</strong>
+          <em>Disponible</em>
           <br />
         </>
       )}
-      {event.type == 'practice' && (
+      {event.name && event.name.trim() !== '' && (
         <>
-          <strong>PRATIQUE</strong>
+          <span>{event.name}</span>
           <br />
         </>
-      )} */}
+      )}
       {event.awayTeam && event.awayTeam.trim() !== '' && (
         <>
-          <span dangerouslySetInnerHTML={{__html: event.awayTeam}} />
+          <span>{event.awayTeam}</span>
           <br />
         </>
       )}
       {event.homeTeam && event.homeTeam.trim() !== '' && (
         <>
-          <span dangerouslySetInnerHTML={{__html: event.homeTeam}} />
+          <span>{event.homeTeam}</span>
           <br />
         </>
       )}
-      {filterVenue(event.venue ?? "")}<br />
+      {Helpers.filterVenue(event.venue ?? "")}<br />
       {
         event.start.toLocaleTimeString(undefined, {
           hour: '2-digit',
@@ -300,15 +165,7 @@ function App() {
           hour: '2-digit',
           minute: '2-digit',
         })
-      } 
-      {/* {event.resource?.comments && event.resource?.comments.trim() !== '' && (
-        <>
-        <br />
-          <em>{event.resource?.comments}</em>
-          <br />
-        </>
-      )} */}
-      
+      }     
     </>
   );
 
@@ -316,39 +173,85 @@ function App() {
     setView(view);
   };
 
-  if (loading) return <p>Chargement en cours...</p>;
-  if (error) return <p>Erreur de chargement: {error}</p>;
+  if (loading) return (
+    <div className="loading">
+      <span className="loader"></span>
+      <p><strong>Chargement en cours...</strong></p>
+      <p>{loadingMessage}</p>
+    </div>
+  );
+  if (error) return (
+    <div className="loading">
+      <span className="material-icons-outlined error-icon">error</span>
+        <p><strong>Erreur de chargement:</strong> {error}</p>
+    </div>
+  );
   
   return (
     <div>
       <div id="filters">
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
-          <FormControlLabel label="Allen" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleAllen(e.target.checked)}
-              sx={{ color: colorAllen, '&.Mui-checked': { color: colorAllen, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Aydelu" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleAydelu(e.target.checked)}
-            sx={{ color: colorAydelu, '&.Mui-checked': { color: colorAydelu, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Aydelu (Cage)" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleAydeluCage(e.target.checked)}
-            sx={{ color: colorAydeluCage, '&.Mui-checked': { color: colorAydeluCage, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Moussette" className="checkbox-venue"
-            control={<Checkbox onChange={(e) => setIsVisibleMoussette(e.target.checked)}
-              sx={{ color: colorMoussette, '&.Mui-checked': { color: colorMoussette, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="St-Jean-Bosco" className="checkbox-venue"
-            control={<Checkbox onChange={(e) => setIsVisibleBosco(e.target.checked)}
-            sx={{ color: colorBosco, '&.Mui-checked': { color: colorBosco, class: 'checkbox-venue-checked' } }} />}
-          />
+          <div className="venue-group">
+            <div className="venue-name">Ste-Bernadette</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleSteBernadette(e.target.checked)}
+              sx={{ color: Consts.COLOR_STEBERNADETTE, '&.Mui-checked': { color: Consts.COLOR_STEBERNADETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleSteBernadetteTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_STEBERNADETTE, '&.Mui-checked': { color: Consts.COLOR_STEBERNADETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">Moussette</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleMoussette(e.target.checked)}
+              sx={{ color: Consts.COLOR_MOUSSETTE, '&.Mui-checked': { color: Consts.COLOR_MOUSSETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleMoussetteTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_MOUSSETTE, '&.Mui-checked': { color: Consts.COLOR_MOUSSETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">Fontaine</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleFontaine(e.target.checked)}
+              sx={{ color: Consts.COLOR_FONTAINE, '&.Mui-checked': { color: Consts.COLOR_FONTAINE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleFontaineTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_FONTAINE, '&.Mui-checked': { color: Consts.COLOR_FONTAINE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">St-Jean-Bosco</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleBosco(e.target.checked)}
+              sx={{ color: Consts.COLOR_BOSCO, '&.Mui-checked': { color: Consts.COLOR_BOSCO, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleBoscoTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_BOSCO, '&.Mui-checked': { color: Consts.COLOR_BOSCO, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">Jolicoeur</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked  onChange={(e) => setIsVisibleJolicoeur(e.target.checked) }
+              sx={{ color: Consts.COLOR_JOLICOEUR, '&.Mui-checked': { color: Consts.COLOR_JOLICOEUR, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleJolicoeurTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_JOLICOEUR, '&.Mui-checked': { color: Consts.COLOR_JOLICOEUR, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
         </FormGroup>
       </div>
       <div id="main">
         <Calendar
           showAllEvents={true}
-          localizer={localizer}
+          localizer={Consts.localizer}
           events={filteredEvents}
           startAccessor="start"
           endAccessor="end"
@@ -362,7 +265,7 @@ function App() {
           date={date}
           onView={handleViewChange}
           onNavigate={(date) => { setDate(new Date(date)); }}
-          messages={messages}
+          messages={Consts.CALENDAR_MESSAGES}
         />
       </div>
     </div>
