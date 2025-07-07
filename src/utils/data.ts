@@ -26,7 +26,7 @@ export async function loadEvents(fileName: string, fileUid: string, eventType: s
     const homeTeam = eventType == Consts.GAME_EVENT_TYPE ?
       Helpers.filterTeamName(row["Home Team Name"]) : Helpers.filterTeamName(row["Team Names"]);
     const awayTeam = eventType == Consts.GAME_EVENT_TYPE ?
-      Helpers.filterTeamName(row["Away Team Name"]) : "";
+      Helpers.filterTeamName(row["Away Team Name"]) : Helpers.filterSecondTeamName(row["Team Names"]);;
 
     return {
       type: eventType,
