@@ -3,13 +3,10 @@ import * as Consts from "./consts";
 
 export function filterTeamName(name : string) {
   var separatorPos = name.indexOf(",");
-  var secondName = "";
 
+  // Ignore second team name
   if (separatorPos > 0) {
-    var posSecondTeam = name.indexOf(" - Masculin", separatorPos);
-    if (posSecondTeam > 0) {
-      secondName = "<br />" + name.substring(separatorPos + 1, posSecondTeam);
-    }
+    name = name.substring(0, separatorPos);
   }
   
   var pos = name.indexOf(" - Masculin");
@@ -17,8 +14,25 @@ export function filterTeamName(name : string) {
     name = name.substring(0, pos);
   }
 
-  name = name.replace(",", "")
-  return `${name}${secondName}`;
+  return name;
+}
+
+export function filterSecondTeamName(name : string) {
+  var separatorPos = name.indexOf(",");
+
+  if (separatorPos > 0) {
+    name = name.substring(separatorPos + 1);
+
+    var pos = name.indexOf(" - Masculin");
+    if (pos > 0) {
+      name = name.substring(0, pos);
+    }
+  }
+  else {
+    name = "";
+  }
+
+  return name;
 }
 
 export function filterVenue(name : string) {
