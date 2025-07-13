@@ -30,6 +30,8 @@ function App() {
   const [isVisibleJolicoeurTimeslot, setIsVisibleJolicoeurTimeslot] = useState<boolean>(false);
 
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [isSticky, setIsSticky] = useState<boolean>(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -72,6 +74,12 @@ function App() {
     };
 
     loadData();   
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+
   }, []);
 
   // When a venue is checked or unchecked
@@ -99,6 +107,14 @@ function App() {
     isVisibleBoscoTimeslot,
     isVisibleJolicoeurTimeslot
   ]);
+
+  const handleScroll = () => {
+    if (window.pageYOffset > 96) {
+      setIsSticky(true);
+    } else {
+      setIsSticky(false);
+    }
+  };
 
   const eventPropGetter = (event: any) => {
     let borderLeftColor = Consts.VENUE_COLORS.get(event.venue) || Consts.VENUE_COLORS.get("");
@@ -176,6 +192,10 @@ function App() {
     setView(view);
   };
 
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
   if (loading) return (
     <div className="loading">
       <span className="loader"></span>
@@ -192,7 +212,15 @@ function App() {
   
   return (
     <div>
-      <div id="filters">
+      <div id="h-menu" onClick={() => toggleMenu()}>
+        {
+          showMenu && <span className="material-icons-outlined">close</span>
+        }
+        {
+          !showMenu && <span className="material-icons-outlined">menu</span>
+        }
+      </div>
+      <div id="filters" className={(showMenu ? 'h-menu-open ' : '') + (isSticky ? 'sticky ' : '')}>
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
           <div className="venue-group">
             <div className="venue-name">Ste-Bernadette</div>
@@ -251,7 +279,7 @@ function App() {
           </div>
         </FormGroup>
       </div>
-      <div id="main">
+      <div id="main" className={isSticky ? 'pushed' : '' }>
         <Calendar
           showAllEvents={true}
           localizer={Consts.localizer}
@@ -262,7 +290,7 @@ function App() {
           eventPropGetter={eventPropGetter}
           components={{ event: EventComponent }}
           culture="fr-CA"
-          views={[Views.MONTH, Views.WEEK, Views.DAY]}
+          views={[Views.MONTH]}
           defaultView={Views.MONTH}
           view={view}
           date={date}
