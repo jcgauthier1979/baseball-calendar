@@ -37,12 +37,16 @@ body {
 
 
 #main {
-  margin: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 #filters {
   border-bottom: 1px solid #dee2e6;
   padding: 10px;
+  background-color: #fff;
 }
 
 .checkbox-venue {
@@ -111,24 +115,100 @@ body {
   color:#FF3D00;
   font-size: 64px;
 }
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
 
+.rbc-toolbar .rbc-toolbar-label {
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
 
+
+#h-menu {
+  display: none;
+  position: fixed;
+  top: 6px;
+  right: 10px;
+  z-index: 1001;
+}
+
+#h-menu .material-icons-outlined {
+
+  font-size: 36px !important;
+}
+
+#h-menu:hover {
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 992px) {
+  #banner {
+    min-height: 48px;
+    position: fixed;
+    top:0px;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1000;
+  }
+  #main {
+    margin-top: 59px;
+  }
+  #banner img {
+  padding: 4px;
+  background-color: #12294b;
+  height: 40px;
+}
+  .triangle {
+    border-bottom: 48px solid transparent;
+    border-left: 23px solid #12294b; /* 45-degree triangle */
+  }
+  #filters {
+    display: none;
+    z-index: 1001;
+  }
+  #h-menu {
+    display: block;
+  }
+
+  #h-menu {
+  display: block;
+}
+
+  .banner-title {
+    font-size: 24px;
+    vertical-align:top;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  #filters.h-menu-open {
+    display: block;
+    position: fixed;
+    top: 49px;
+    z-index: 1000;
+  }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 993px) {
+  #filters {
+    padding-left: 38px
+  }
 
-}
+  .sticky {
+    position: fixed;
+    z-index: 1002;
+    top:0;
+    filter: drop-shadow(#8d8d8d 2px -1px 4px);
+    width: calc(100% - 48px);
+  }
 
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
+  #main.pushed {
+    margin-top: 106px
+  }
 
+  .rbc-toolbar .rbc-toolbar-label {
+    padding: 0 270px 0 10px !important;
+  }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
