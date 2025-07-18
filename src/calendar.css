@@ -2,6 +2,8 @@ body {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   padding: 0;
   margin: 0;
+  
+  background-color: rgb(250, 250, 250);
 }
 
 #banner {
@@ -9,7 +11,8 @@ body {
   padding: 0px;
   border-bottom: 1px solid #dee2e6;
   min-height: 96px;
-  line-height:0
+  line-height:0;
+  background-color: #fff;
 }
 
 #banner img {
@@ -40,7 +43,8 @@ body {
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 10px;  
+  background-color: #fff;
 }
 
 #filters {
@@ -82,6 +86,13 @@ body {
 .rbc-row-content-scroll-container {
   min-height: 80px;
 }
+
+/*.rbc-row.rbc-month-header {
+  position: sticky;
+  top: 97px;
+  z-index: 1000;
+  background-color: #fff;
+}*/
 
 .rbc-event {
   min-height: 91px !important;
@@ -138,6 +149,37 @@ body {
 
 #h-menu:hover {
   cursor: pointer;
+}
+
+.toolbar-nav {
+  padding-right: 16px;
+  margin-right: 16px;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  border-right:#dee2e6 1px solid;
+}
+
+.toolbar-nav .material-icons-outlined{
+    display: inline-flex;
+    vertical-align: top;
+}
+
+.toolbar-nav Button {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.toolbar-nav-month {
+  padding-bottom: 8px;
+}
+
+.toolbar-nav-month-icon {
+  padding-right: 6px;
+}
+
+.toolbar-nav-month-label {
+  text-transform: capitalize !important;
 }
 
 @media only screen and (max-width: 992px) {

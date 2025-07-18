@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, Views, type View } from "react-big-calendar";
+import { Calendar, Views, type NavigateAction, type View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Checkbox from '@mui/material/Checkbox';
-import { FormControlLabel, FormGroup } from "@mui/material";
+import { Button, FormControlLabel, FormGroup } from "@mui/material";
 import * as Consts from "./utils/consts";
 import * as Types from "./utils/types";
 import * as Helpers from "./utils/helpers";
@@ -192,6 +192,28 @@ function App() {
     setView(view);
   };
 
+    const handleNavigate = (action: NavigateAction) => {
+    let newDate = new Date(date);
+
+    switch (action) {
+      case 'NEXT':
+        if (view === 'month') newDate.setMonth(newDate.getMonth() + 1);
+        if (view === 'week') newDate.setDate(newDate.getDate() + 7);
+        if (view === 'day') newDate.setDate(newDate.getDate() + 1);
+        break;
+      case 'PREV':
+        if (view === 'month') newDate.setMonth(newDate.getMonth() - 1);
+        if (view === 'week') newDate.setDate(newDate.getDate() - 7);
+        if (view === 'day') newDate.setDate(newDate.getDate() - 1);
+        break;
+      case 'TODAY':
+        newDate = new Date();
+        break;
+    }
+
+    setDate(newDate);
+  };
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
@@ -222,6 +244,21 @@ function App() {
       </div>
       <div id="filters" className={(showMenu ? 'h-menu-open ' : '') + (isSticky ? 'sticky ' : '')}>
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
+          <div className="toolbar-nav">
+            
+            <div className="mx-2 font-bold toolbar-nav-month">
+              <span className="material-icons-outlined toolbar-nav-month-icon">date_range</span>
+              <span className="toolbar-nav-month-label">{Consts.localizer.format(date, 'MMMM yyyy', "fr-CA")}</span>
+            </div>
+
+            <Button variant="contained" onClick={() => handleNavigate('PREV')}>
+              <span className="material-icons-outlined">chevron_left</span>
+            </Button>
+            <Button variant="contained" onClick={() => handleNavigate('NEXT')}>
+              <span className="material-icons-outlined">chevron_right</span>
+            </Button>
+
+          </div>
           <div className="venue-group">
             <div className="venue-name">Ste-Bernadette</div>
             <FormControlLabel label="" className="checkbox-venue"
@@ -288,7 +325,7 @@ function App() {
           endAccessor="end"
           style={{ minHeight: 600 }}
           eventPropGetter={eventPropGetter}
-          components={{ event: EventComponent }}
+          components={{ event: EventComponent, toolbar: () => null }}
           culture="fr-CA"
           views={[Views.MONTH]}
           defaultView={Views.MONTH}
