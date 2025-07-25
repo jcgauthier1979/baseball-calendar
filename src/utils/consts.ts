@@ -12,6 +12,10 @@ export const COLOR_GAME: string ="#fefefe";
 export const COLOR_PRACTICE: string ="#e6f2ff";
 export const COLOR_TIMESLOT: string ="#fff2cc";
 
+export const CLASS_NAME_GAME: string ="event-game";
+export const CLASS_NAME_PRACTICE: string ="event-practice";
+export const CLASS_NAME_TIMESLOT: string ="event-timeslot";
+
 export const COLOR_STEBERNADETTE: string ="#0066cc";
 export const COLOR_MOUSSETTE: string = "#339933";
 export const COLOR_FONTAINE: string = "#9900ff";
@@ -30,7 +34,23 @@ export const VENUE_FONTAINE_TIMESLOT: string = VENUE_FONTAINE + TIMESLOT_EVENT_T
 export const VENUE_BOSCO_TIMESLOT: string = VENUE_BOSCO + TIMESLOT_EVENT_TYPE;
 export const VENUE_JOLICOEUR_TIMESLOT: string = VENUE_JOLICOEUR + TIMESLOT_EVENT_TYPE;
 
-export const VENUE_COLORS = new Map<string, string>(
+export const VENUE_CLASS = new Map<string, string>(
+    [
+      [VENUE_STEBERNADETTE, "venue-blue"],
+      [VENUE_MOUSSETTE, "venue-green"],
+      [VENUE_FONTAINE, "venue-purple"],
+      [VENUE_BOSCO, "venue-red"],
+      [VENUE_JOLICOEUR, "venue-yellow"],
+      [VENUE_STEBERNADETTE_TIMESLOT, "venue-blue"],
+      [VENUE_MOUSSETTE_TIMESLOT, "venue-green"],
+      [VENUE_FONTAINE_TIMESLOT, "venue-purple"],
+      [VENUE_BOSCO_TIMESLOT, "venue-red"],
+      [VENUE_JOLICOEUR_TIMESLOT, "venue-yellow"],
+      ["", "venue-default"],
+    ]
+  );
+
+  export const VENUE_COLORS = new Map<string, string>(
     [
       [VENUE_MOUSSETTE, COLOR_MOUSSETTE],
       [VENUE_STEBERNADETTE, COLOR_STEBERNADETTE],
@@ -55,6 +75,10 @@ export const CALENDAR_MESSAGES = {
   day: 'Jour',
   agenda: 'Agenda',
 };
+
+export const DAY_NAMES_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+export const defaultLocale = "fr-CA";
 
 export const locales = {
   "fr-CA": frCA
