@@ -9,7 +9,6 @@ import * as Helpers from "./utils/helpers";
 import * as Data from "./utils/data";
 import { CustomAgendaEvent } from "./components/customAgendaEvent";
 import { CustomAgendaDate } from "./components/customAgendaDate";
-import { CustomAgendaEmpty } from "./components/customAgendaEmpty";
 
 function App() {
   const [events, setEvents] = useState<Types.CalendarEvent[]>([]);
