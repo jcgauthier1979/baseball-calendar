@@ -62,3 +62,16 @@ export function formatDate(date: Date): string {
 
   return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}`;
 }
+
+export function formatISODate(date: Date): string {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function dateMonthStart(date: Date): Date {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+  return new Date(`${year}-${month}-01T00:00:00.000-04:00`);
+}

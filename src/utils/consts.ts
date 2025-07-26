@@ -18,6 +18,10 @@ export const COLOR_AYDELU_CAGE: string = "#ffc107";
 export const COLOR_MOUSSETTE: string = "#9900ff";
 export const COLOR_BOSCO: string = "#cc3300";
 
+export const CLASS_NAME_GAME: string ="event-game";
+export const CLASS_NAME_PRACTICE: string ="event-practice";
+export const CLASS_NAME_TIMESLOT: string ="event-timeslot";
+
 export const VENUE_ALLEN: string = "Parc Allen - Allen";
 export const VENUE_AYDELU: string = "Parc Aydelu - Terrain Baseball";
 export const VENUE_AYDELU_CAGE: string = "Parc Aydelu - Cage frappeurs";
@@ -30,7 +34,23 @@ export const VENUE_AYDELU_CAGE_TIMESLOT: string = VENUE_AYDELU_CAGE + TIMESLOT_E
 export const VENUE_MOUSSETTE_TIMESLOT: string = VENUE_MOUSSETTE + TIMESLOT_EVENT_TYPE;
 export const VENUE_BOSCO_TIMESLOT: string = VENUE_BOSCO + TIMESLOT_EVENT_TYPE;
 
-export const VENUE_COLORS = new Map<string, string>(
+export const VENUE_CLASS = new Map<string, string>(
+    [
+      [VENUE_ALLEN, "venue-blue"],
+      [VENUE_AYDELU, "venue-green"],
+      [VENUE_MOUSSETTE, "venue-purple"],
+      [VENUE_BOSCO, "venue-red"],
+      [VENUE_AYDELU_CAGE, "venue-yellow"],
+      [VENUE_ALLEN_TIMESLOT, "venue-blue"],
+      [VENUE_AYDELU_TIMESLOT, "venue-green"],
+      [VENUE_MOUSSETTE_TIMESLOT, "venue-purple"],
+      [VENUE_BOSCO_TIMESLOT, "venue-red"],
+      [VENUE_AYDELU_CAGE_TIMESLOT, "venue-yellow"],
+      ["", "venue-default"],
+    ]
+  );
+
+  export const VENUE_COLORS = new Map<string, string>(
     [
       [VENUE_ALLEN, COLOR_ALLEN],
       [VENUE_AYDELU, COLOR_AYDELU],
@@ -54,7 +74,12 @@ export const CALENDAR_MESSAGES = {
   week: 'Semaine',
   day: 'Jour',
   agenda: 'Agenda',
+  noEventsInRange: 'Aucun évènement pour ce mois.'
 };
+
+export const DAY_NAMES_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+export const defaultLocale = "fr-CA";
 
 export const locales = {
   "fr-CA": frCA
