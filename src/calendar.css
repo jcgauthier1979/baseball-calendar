@@ -221,6 +221,13 @@ body {
   text-align: center;
 }
 
+.rbc-agenda-empty {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+  font-weight: 600;
+}
 .rbc-agenda-view table.rbc-agenda-table,
 .rbc-agenda-event-cell,
 .rbc-agenda-view table.rbc-agenda-table tr {

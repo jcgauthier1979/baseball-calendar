@@ -9,6 +9,7 @@ import * as Helpers from "./utils/helpers";
 import * as Data from "./utils/data";
 import { CustomAgendaEvent } from "./components/customAgendaEvent";
 import { CustomAgendaDate } from "./components/customAgendaDate";
+import { CustomAgendaEmpty } from "./components/customAgendaEmpty";
 
 function App() {
   const [events, setEvents] = useState<Types.CalendarEvent[]>([]);
@@ -220,6 +221,7 @@ function App() {
     }
 
     setDate(newDate);
+    setMonthViewDate(newDate);
   };
 
   const toggleMenu = () => {
@@ -335,7 +337,7 @@ function App() {
           eventPropGetter={eventPropGetter}
           components={{ event: EventComponent, toolbar: () => null, agenda: {
               event: CustomAgendaEvent,
-              date: CustomAgendaDate as unknown as React.ComponentType<{}>
+              date: CustomAgendaDate as unknown as React.ComponentType<{}>,
             },
           }}
           culture="fr-CA"

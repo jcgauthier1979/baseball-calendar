@@ -74,6 +74,7 @@ export const CALENDAR_MESSAGES = {
   week: 'Semaine',
   day: 'Jour',
   agenda: 'Agenda',
+  noEventsInRange: 'Aucun évènement pour ce mois.'
 };
 
 export const DAY_NAMES_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
