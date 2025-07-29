@@ -17,12 +17,26 @@ export const COLOR_THIBAULT: string = "#339933";
 export const COLOR_PERKINS: string = "#9900ff";
 export const COLOR_PERKINSCAGE: string = "#cc3300";
 
+export const CLASS_NAME_GAME: string ="event-game";
+export const CLASS_NAME_PRACTICE: string ="event-practice";
+export const CLASS_NAME_TIMESLOT: string ="event-timeslot";
+
 export const VENUE_LONGUEALLEE: string = "Parc Longue-Allée - Terrain Longue-Allée";
 export const VENUE_THIBAULT: string = "Parc Thibault - Terrain Thibault";
 export const VENUE_PERKINS: string = "Parc J. A. Perkins - Terrain J. A. Perkins";
 export const VENUE_PERKINSCAGE: string = "Parc J. A. Perkins - Cage";
 
-export const VENUE_COLORS = new Map<string, string>(
+export const VENUE_CLASS = new Map<string, string>(
+    [
+      [VENUE_LONGUEALLEE, "venue-blue"],
+      [VENUE_THIBAULT, "venue-green"],
+      [VENUE_PERKINS, "venue-purple"],
+      [VENUE_PERKINSCAGE, "venue-red"],
+      ["", "venue-default"],
+    ]
+  );
+
+  export const VENUE_COLORS = new Map<string, string>(
     [
       [VENUE_LONGUEALLEE, COLOR_LONGUEALLEE],
       [VENUE_THIBAULT, COLOR_THIBAULT],
@@ -40,7 +54,12 @@ export const CALENDAR_MESSAGES = {
   week: 'Semaine',
   day: 'Jour',
   agenda: 'Agenda',
+  noEventsInRange: 'Aucun évènement pour ce mois.'
 };
+
+export const DAY_NAMES_SHORT = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+export const defaultLocale = "fr-CA";
 
 export const locales = {
   "fr-CA": frCA

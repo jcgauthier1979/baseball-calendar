@@ -2,17 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Calendar, Views, type NavigateAction, type View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Checkbox from '@mui/material/Checkbox';
-import { Button, FormControlLabel, FormGroup } from "@mui/material";
+import { Button, FormControlLabel, FormGroup, useMediaQuery, useTheme  } from "@mui/material";
 import * as Consts from "./utils/consts";
 import * as Types from "./utils/types";
 import * as Helpers from "./utils/helpers";
 import * as Data from "./utils/data";
+import { CustomAgendaEvent } from "./components/customAgendaEvent";
+import { CustomAgendaDate } from "./components/customAgendaDate";
 
 function App() {
   const [events, setEvents] = useState<Types.CalendarEvent[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Types.CalendarEvent[]>([]);
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState<Date>(new Date());
+  const [monthViewDate, setMonthViewDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const uid : string = Date.now().toString();
@@ -25,6 +28,9 @@ function App() {
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [isSticky, setIsSticky] = useState<boolean>(false);
+
+  const theme = useTheme();
+  const isAgendaView = useMediaQuery( theme.breakpoints.down('sm') );
 
   useEffect(() => {
     const loadData = async () => {
@@ -70,6 +76,18 @@ function App() {
     isVisiblePerkinsCage
   ]);
 
+  useEffect(() => {
+    if (isAgendaView) {
+      // Keep for later
+      setMonthViewDate(date);
+      setDate(Helpers.dateMonthStart(date));
+    }
+    else {
+      // Restore
+      setDate(monthViewDate);
+    }
+  }, [isAgendaView]);
+
   const handleScroll = () => {
     if (window.pageYOffset > 96) {
       setIsSticky(true);
@@ -79,34 +97,22 @@ function App() {
   };
 
   const eventPropGetter = (event: any) => {
-    let borderLeftColor = Consts.VENUE_COLORS.get(event.venue) || Consts.VENUE_COLORS.get("");
-    let backgroundColor = event.type == Consts.GAME_EVENT_TYPE ?  Consts.COLOR_GAME : Consts.COLOR_PRACTICE;
+    let classNameVenue = Consts.VENUE_CLASS.get(event.venue) || Consts.VENUE_CLASS.get("");
+    let classNameType = "";
 
     switch(event.type) {
       case Consts.GAME_EVENT_TYPE:
-        backgroundColor = Consts.COLOR_GAME;
+        classNameType = Consts.CLASS_NAME_GAME;
         break;
       case Consts.PRACTICE_EVENT_TYPE:
-        backgroundColor = Consts.COLOR_PRACTICE;
+        classNameType = Consts.CLASS_NAME_PRACTICE;
         break;
       default:
-        backgroundColor = Consts.COLOR_TIMESLOT;
+        classNameType = Consts.CLASS_NAME_TIMESLOT;
     }
 
-    type BorderStyle = | 'dotted' | 'solid';
-    let borderStyle: BorderStyle  = event.type == Consts.TIMESLOT_EVENT_TYPE ? 'dotted' : 'solid';
-  
     return {
-      style: {
-        backgroundColor,
-        borderRadius: '5px',
-        color: '#333',
-        borderLeft: `15px solid ${borderLeftColor}`,
-        borderTop: `1px ${borderStyle} ${borderLeftColor}`,
-        borderRight: `1px ${borderStyle} ${borderLeftColor}`,
-        borderBottom: `1px ${borderStyle} ${borderLeftColor}`,
-        display: 'block',
-      },
+      className: `${classNameType} ${classNameVenue}`
     };
   };
 
@@ -160,13 +166,15 @@ function App() {
     switch (action) {
       case 'NEXT':
         if (view === 'month') newDate.setMonth(newDate.getMonth() + 1);
-        if (view === 'week') newDate.setDate(newDate.getDate() + 7);
-        if (view === 'day') newDate.setDate(newDate.getDate() + 1);
+        if (view === 'agenda') newDate.setMonth(newDate.getMonth() + 1);
+        //if (view === 'week') newDate.setDate(newDate.getDate() + 7);
+        //if (view === 'day') newDate.setDate(newDate.getDate() + 1);
         break;
       case 'PREV':
         if (view === 'month') newDate.setMonth(newDate.getMonth() - 1);
-        if (view === 'week') newDate.setDate(newDate.getDate() - 7);
-        if (view === 'day') newDate.setDate(newDate.getDate() - 1);
+        if (view === 'agenda') newDate.setMonth(newDate.getMonth() - 1);
+        //if (view === 'week') newDate.setDate(newDate.getDate() - 7);
+        //if (view === 'day') newDate.setDate(newDate.getDate() - 1);
         break;
       case 'TODAY':
         newDate = new Date();
@@ -174,6 +182,7 @@ function App() {
     }
 
     setDate(newDate);
+    setMonthViewDate(newDate);
   };
 
   const toggleMenu = () => {
@@ -250,11 +259,15 @@ function App() {
           endAccessor="end"
           style={{ minHeight: 600 }}
           eventPropGetter={eventPropGetter}
-          components={{ event: EventComponent, toolbar: () => null }}
+          components={{ event: EventComponent, toolbar: () => null, agenda: {
+              event: CustomAgendaEvent,
+              date: CustomAgendaDate as unknown as React.ComponentType<{}>,
+            },
+          }}
           culture="fr-CA"
-          views={[Views.MONTH]}
+          views={[Views.MONTH, Views.AGENDA]}
           defaultView={Views.MONTH}
-          view={view}
+          view={isAgendaView ? Views.AGENDA : view}
           date={date}
           onView={handleViewChange}
           onNavigate={(date) => { setDate(new Date(date)); }}
