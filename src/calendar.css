@@ -319,12 +319,12 @@ overflow: inherit !important;
   }
   #banner img {
   padding: 4px;
-  background-color: #12294b;
+  background-color: #007638;
   height: 40px;
 }
   .triangle {
     border-bottom: 48px solid transparent;
-    border-left: 23px solid #12294b; /* 45-degree triangle */
+    border-left: 23px solid #007638; /* 45-degree triangle */
   }
   #filters {
     display: none;
