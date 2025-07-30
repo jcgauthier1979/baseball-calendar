@@ -1,266 +1,145 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, dateFnsLocalizer, Views, type View } from "react-big-calendar";
+import { Calendar, Views, type NavigateAction, type View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { parse, startOfWeek, getDay, format } from "date-fns";
-import frCA from "date-fns/locale/fr-CA";
-import Papa from "papaparse";
 import Checkbox from '@mui/material/Checkbox';
-import { FormControlLabel, FormGroup } from "@mui/material";
-
-const locales = {
-  "fr-CA": frCA
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: () => startOfWeek(new Date(), { weekStartsOn: 0 }),
-  getDay,
-  locales
-});
-
-type CsvRow = {
-  Date: string;
-  "Start Time": string;
-  "End Time": string;
-  "Home Team Name": string;
-  "Away Team Name": string;
-  Venue: string;
-  Status: string;
-  Comments: string;
-};
-
-type PracticesCsvRow = {
-  "Team IDs": string;
-  "Team Names": string;
-  "Team Registry IDs": string;
-  "Name": string;
-  Type: string,
-  Venue: string;
-  Date: string;
-  "Start Time": string;
-  "End Time": string;
-  Status: string;
-  Comments: string;
-};
-
-interface CalendarEvent {
-  type: string;
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  allDay?: boolean;
-  homeTeam: string;
-  awayTeam: string;
-  venue: string;
-  resource?: {
-    status: string;
-    comments: string;
-  };
-}
-
-const messages = {
-  previous: 'Précédant',
-  next: 'Suivant',
-  today: 'Aujourd\'hui',
-  month: 'Mois',
-  week: 'Semaine',
-  day: 'Jour',
-  agenda: 'Agenda',
-};
-
-function filterTeamName(name : string) {
-  var separatorPos = name.indexOf(",");
-  var secondName = "";
-
-  if (separatorPos > 0) {
-    var posSecondTeam = name.indexOf(" - Masculin", separatorPos);
-    if (posSecondTeam > 0) {
-      secondName = "<br />" + name.substring(separatorPos + 1, posSecondTeam);
-    }
-  }
-  
-  var pos = name.indexOf(" - Masculin");
-  if (pos > 0) {
-    name = name.substring(0, pos);
-  }
-
-  name = name.replace(",", "")
-  return `${name}${secondName}`;
-}
-
-function filterVenue(name : string) {
-  // Remove venue specific prefix
-  name = name.replace(" - Terrain Russell Martin", "")
-  // Remove generic prefix
-  name = name.replace("Parc ", "")
-  return name;
-}
+import { Button, FormControlLabel, FormGroup, useMediaQuery, useTheme  } from "@mui/material";
+import * as Consts from "./utils/consts";
+import * as Types from "./utils/types";
+import * as Helpers from "./utils/helpers";
+import * as Data from "./utils/data";
+import { CustomAgendaEvent } from "./components/customAgendaEvent";
+import { CustomAgendaDate } from "./components/customAgendaDate";
 
 function App() {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<CalendarEvent[]>([]);
+  const [events, setEvents] = useState<Types.CalendarEvent[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Types.CalendarEvent[]>([]);
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState<Date>(new Date());
+  const [monthViewDate, setMonthViewDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const uid : string = Date.now().toString();
 
   const [isVisibleRusselMartin, setIsVisibleRusselMartin] = useState<boolean>(true);
 
+  const [isVisibleSteBernadetteTimeslot, setIsVisibleSteBernadetteTimeslot] = useState<boolean>(false);
+  const [isVisibleMoussetteTimeslot, setIsVisibleMoussetteTimeslot] = useState<boolean>(false);
+  const [isVisibleFontaineTimeslot, setIsVisibleFontaineTimeslot] = useState<boolean>(false);
+  const [isVisibleBoscoTimeslot, setIsVisibleBoscoTimeslot] = useState<boolean>(false);
+  const [isVisibleJolicoeurTimeslot, setIsVisibleJolicoeurTimeslot] = useState<boolean>(false);
+
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [isSticky, setIsSticky] = useState<boolean>(false);
+
+  const theme = useTheme();
+  const isAgendaView = useMediaQuery( theme.breakpoints.down('sm') );
+
   useEffect(() => {
-    const loadCSV = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch('/calendrier-chelsea/games.csv?' + uid);
-        if (!response.ok) throw new Error('Failed to fetch CSV');
-
-        const csvText = await response.text();
-        const parsed =  Papa.parse<CsvRow>(csvText, {
-          header: true
-        });
-
-        if (parsed.errors.length) {
-          throw new Error(parsed.errors.map(e => e.message).join(', '));
-        }
-
-        const parsedGameEvents: CalendarEvent[] = parsed.data.map((row, index) => {
-          const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-          const end = new Date(`${row.Date}T${row["End Time"]}:00`);
-
-          return {
-            type: "game",
-            id: index,
-            title: `${row["Home Team Name"]}\n${row["Away Team Name"]}`,
-            homeTeam: filterTeamName(row["Home Team Name"]),
-            awayTeam: filterTeamName(row["Away Team Name"]),
-            start: start,
-            end: end,
-            allDay: false,
-            venue: row["Venue"],
-            resource: {
-              status: row.Status,
-              comments: row.Comments
-            }
-          };
-        });
-
-        // Practices
-        const practicesResponse = await fetch('/calendrier-chelsea/practices.csv?' + uid);
-        if (!practicesResponse.ok) throw new Error('Failed to fetch CSV');
-
-        const practicesCsvText = await practicesResponse.text();
-        const parsedPractices =  Papa.parse<PracticesCsvRow>(practicesCsvText, {
-          header: true
-        });
-
-        if (parsedPractices.errors.length) {
-          throw new Error(parsedPractices.errors.map(e => e.message).join(', '));
-        }
-
-        const parsedPracticesEvents: CalendarEvent[] = parsedPractices.data.map((row, index) => {
-          const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-          const end = new Date(`${row.Date}T${row["End Time"]}:00`);
-
-          return {
-            type: "practice",
-            id: index,
-            title: filterTeamName(row["Team Names"]),
-            homeTeam: filterTeamName(row["Team Names"]),
-            awayTeam: "",
-            start: start,
-            end: end,
-            allDay: false,
-            venue: row["Venue"],
-            resource: {
-              status: row.Status,
-              comments: row.Comments
-            }
-          };
-        });
-
+        setLoadingMessage("Chargement des matchs...");
+        const parsedGameEvents = await Data.loadEvents("games.csv", uid, Consts.GAME_EVENT_TYPE);
+        setLoadingMessage("Chargement des pratiques...");
+        const parsedPracticesEvents = await Data.loadEvents("practices.csv", uid, Consts.PRACTICE_EVENT_TYPE);
+        
         setEvents([...parsedGameEvents, ...parsedPracticesEvents]);
-        setFilteredEvents([...parsedGameEvents, ...parsedPracticesEvents]);
+
+        setLoadingMessage("Chargement du calendrier...");
+        setFilteredEvents([...parsedGameEvents, ...parsedPracticesEvents]
+        );
       } catch (err: any) {
-        console.error('CSV load error:', err);
-        setError(err.message || 'Unknown error');
+        console.error('Erreur de chargement : ', err);
+        setError(err.message || 'Erreur inconnue');
       } finally {
         setLoading(false);
       }
     };
 
-    loadCSV();   
+    loadData();   
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+
   }, []);
 
   // When a venue is checked or unchecked
   useEffect(() => {
-    setFilteredEvents(events.filter(e => (!isVisibleRusselMartin ? e.venue != venueRusselMartin : e)
+    setFilteredEvents(events.filter(e => (!isVisibleRusselMartin ? e.venue != Consts.VENUE_RUSSELMARTIN : e)
       ));
   }, [
     isVisibleRusselMartin
   ]);
 
-  const eventTypeGame: string ="game";
-  //const eventTypePractice: string ="practice";
+  useEffect(() => {
+    if (isAgendaView) {
+      // Keep for later
+      setMonthViewDate(date);
+      setDate(Helpers.dateMonthStart(date));
+    }
+    else {
+      // Restore
+      setDate(monthViewDate);
+    }
+  }, [isAgendaView]);
 
-  const colorGame: string ="#fefefe";
-  const colorPractice: string ="#e6f2ff";
-
-  const colorRusselMartin: string ="#0066cc";
-  const venueRusselMartin: string = "Parc Russell Martin - Terrain Russell Martin";
- 
-
-  const venueColors: Record<string, string> = {
-    "Parc Russell Martin - Terrain Russell Martin": colorRusselMartin,
-    "Default": "#000",
+  const handleScroll = () => {
+    if (window.pageYOffset > 96) {
+      setIsSticky(true);
+    } else {
+      setIsSticky(false);
+    }
   };
 
   const eventPropGetter = (event: any) => {
-    let borderLeftColor = venueColors[event.venue] || venueColors.Default;
-    let backgroundColor = event.type == eventTypeGame ?  colorGame : colorPractice;
-  
+    let classNameVenue = Consts.VENUE_CLASS.get(event.venue) || Consts.VENUE_CLASS.get("");
+    let classNameType = "";
+
+    switch(event.type) {
+      case Consts.GAME_EVENT_TYPE:
+        classNameType = Consts.CLASS_NAME_GAME;
+        break;
+      case Consts.PRACTICE_EVENT_TYPE:
+        classNameType = Consts.CLASS_NAME_PRACTICE;
+        break;
+      default:
+        classNameType = Consts.CLASS_NAME_TIMESLOT;
+    }
+
     return {
-      style: {
-        backgroundColor,
-        borderRadius: '5px',
-        color: '#333',
-        borderLeft: `15px solid ${borderLeftColor}`,
-        borderTop: `1px solid ${borderLeftColor}`,
-        borderRight: `1px solid ${borderLeftColor}`,
-        borderBottom: `1px solid ${borderLeftColor}`,
-        display: 'block',
-      },
+      className: `${classNameType} ${classNameVenue}`
     };
   };
 
-  const EventComponent: React.FC<{ event: CalendarEvent }> = ({ event }) => (
+  const EventComponent: React.FC<{ event: Types.CalendarEvent }> = ({ event }) => (
     <>
-    
-      {/* {event.type == 'game' && (
+      {event.type == 'timeslot' && (
         <>
-          <strong>MATCH</strong>
+          <em>Disponible</em>
           <br />
         </>
       )}
-      {event.type == 'practice' && (
+      {event.name && event.name.trim() !== '' && (
         <>
-          <strong>PRATIQUE</strong>
+          <span>{event.name}</span>
           <br />
         </>
-      )} */}
+      )}
       {event.awayTeam && event.awayTeam.trim() !== '' && (
         <>
-          <span dangerouslySetInnerHTML={{__html: event.awayTeam}} />
+          <span>{event.awayTeam}</span>
           <br />
         </>
       )}
       {event.homeTeam && event.homeTeam.trim() !== '' && (
         <>
-          <span dangerouslySetInnerHTML={{__html: event.homeTeam}} />
+          <span>{event.homeTeam}</span>
           <br />
         </>
       )}
-      {filterVenue(event.venue ?? "")}<br />
+      {Helpers.filterVenue(event.venue ?? "")}<br />
       {
         event.start.toLocaleTimeString(undefined, {
           hour: '2-digit',
@@ -270,15 +149,7 @@ function App() {
           hour: '2-digit',
           minute: '2-digit',
         })
-      } 
-      {/* {event.resource?.comments && event.resource?.comments.trim() !== '' && (
-        <>
-        <br />
-          <em>{event.resource?.comments}</em>
-          <br />
-        </>
-      )} */}
-      
+      }     
     </>
   );
 
@@ -286,37 +157,108 @@ function App() {
     setView(view);
   };
 
-  if (loading) return <p>Chargement en cours...</p>;
-  if (error) return <p>Erreur de chargement: {error}</p>;
+    const handleNavigate = (action: NavigateAction) => {
+    let newDate = new Date(date);
+
+    switch (action) {
+      case 'NEXT':
+        if (view === 'month') newDate.setMonth(newDate.getMonth() + 1);
+        if (view === 'agenda') newDate.setMonth(newDate.getMonth() + 1);
+        //if (view === 'week') newDate.setDate(newDate.getDate() + 7);
+        //if (view === 'day') newDate.setDate(newDate.getDate() + 1);
+        break;
+      case 'PREV':
+        if (view === 'month') newDate.setMonth(newDate.getMonth() - 1);
+        if (view === 'agenda') newDate.setMonth(newDate.getMonth() - 1);
+        //if (view === 'week') newDate.setDate(newDate.getDate() - 7);
+        //if (view === 'day') newDate.setDate(newDate.getDate() - 1);
+        break;
+      case 'TODAY':
+        newDate = new Date();
+        break;
+    }
+
+    setDate(newDate);
+    setMonthViewDate(newDate);
+  };
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  if (loading) return (
+    <div className="loading">
+      <span className="loader"></span>
+      <p><strong>Chargement en cours...</strong></p>
+      <p>{loadingMessage}</p>
+    </div>
+  );
+  if (error) return (
+    <div className="loading">
+      <span className="material-icons-outlined error-icon">error</span>
+        <p><strong>Erreur de chargement:</strong> {error}</p>
+    </div>
+  );
   
   return (
     <div>
-      <div id="filters">
+      <div id="h-menu" onClick={() => toggleMenu()}>
+        {
+          showMenu && <span className="material-icons-outlined">close</span>
+        }
+        {
+          !showMenu && <span className="material-icons-outlined">menu</span>
+        }
+      </div>
+      <div id="filters" className={(showMenu ? 'h-menu-open ' : '') + (isSticky ? 'sticky ' : '')}>
         <FormGroup row sx={{ justifyContent: 'center', alignItems: 'center', gap: 2, '& .MuiSvgIcon-root': { fontSize: 24 } }}>
-          <FormControlLabel label="Russell Martin" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleRusselMartin(e.target.checked)}
-              sx={{ color: colorRusselMartin, '&.Mui-checked': { color: colorRusselMartin, class: 'checkbox-venue-checked' } }} />}
-          />
+          
+          <div className="toolbar-nav">
+            
+            <div className="mx-2 font-bold toolbar-nav-month">
+              <span className="material-icons-outlined toolbar-nav-month-icon">date_range</span>
+              <span className="toolbar-nav-month-label">{Consts.localizer.format(date, 'MMMM yyyy', "fr-CA")}</span>
+            </div>
+
+            <Button variant="contained" onClick={() => handleNavigate('PREV')}>
+              <span className="material-icons-outlined">chevron_left</span>
+            </Button>
+            <Button variant="contained" onClick={() => handleNavigate('NEXT')}>
+              <span className="material-icons-outlined">chevron_right</span>
+            </Button>
+
+          </div>
+          <div className="venue-group">
+            <FormControlLabel label="Russell Martin" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleRusselMartin(e.target.checked)}
+                sx={{ color: Consts.COLOR_RUSSELMARTIN, '&.Mui-checked': { color: Consts.COLOR_RUSSELMARTIN, class: 'checkbox-venue-checked' } }} />}
+            />
+          </div>
+            
         </FormGroup>
       </div>
-      <div id="main">
+      <div id="main" className={isSticky ? 'pushed' : '' }>
         <Calendar
           showAllEvents={true}
-          localizer={localizer}
+          localizer={Consts.localizer}
           events={filteredEvents}
           startAccessor="start"
           endAccessor="end"
           style={{ minHeight: 600 }}
           eventPropGetter={eventPropGetter}
-          components={{ event: EventComponent }}
+          components={{ event: EventComponent, toolbar: () => null, agenda: {
+              event: CustomAgendaEvent,
+              date: CustomAgendaDate as unknown as React.ComponentType<{}>,
+            },
+          }}
           culture="fr-CA"
-          views={[Views.MONTH, Views.WEEK, Views.DAY]}
+          views={[Views.MONTH, Views.AGENDA]}
           defaultView={Views.MONTH}
-          view={view}
+          view={isAgendaView ? Views.AGENDA : view}
           date={date}
           onView={handleViewChange}
           onNavigate={(date) => { setDate(new Date(date)); }}
-          messages={messages}
+          messages={Consts.CALENDAR_MESSAGES}
         />
       </div>
     </div>
