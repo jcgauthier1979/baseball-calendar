@@ -43,6 +43,8 @@ export function filterVenue(name : string) {
     name = name.substring(pos + 5);
   }
 
+  name = name.replace(" - Terrain Russell Martin", "")
+
   // Remove timeslot suffix
   name = name.replace(Consts.TIMESLOT_EVENT_TYPE, "");
   return name;

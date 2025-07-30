@@ -22,12 +22,6 @@ function App() {
 
   const [isVisibleRusselMartin, setIsVisibleRusselMartin] = useState<boolean>(true);
 
-  const [isVisibleSteBernadetteTimeslot, setIsVisibleSteBernadetteTimeslot] = useState<boolean>(false);
-  const [isVisibleMoussetteTimeslot, setIsVisibleMoussetteTimeslot] = useState<boolean>(false);
-  const [isVisibleFontaineTimeslot, setIsVisibleFontaineTimeslot] = useState<boolean>(false);
-  const [isVisibleBoscoTimeslot, setIsVisibleBoscoTimeslot] = useState<boolean>(false);
-  const [isVisibleJolicoeurTimeslot, setIsVisibleJolicoeurTimeslot] = useState<boolean>(false);
-
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [isSticky, setIsSticky] = useState<boolean>(false);
