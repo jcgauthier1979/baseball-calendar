@@ -16,52 +16,19 @@ export const CLASS_NAME_GAME: string ="event-game";
 export const CLASS_NAME_PRACTICE: string ="event-practice";
 export const CLASS_NAME_TIMESLOT: string ="event-timeslot";
 
-export const COLOR_STEBERNADETTE: string ="#0066cc";
-export const COLOR_MOUSSETTE: string = "#339933";
-export const COLOR_FONTAINE: string = "#9900ff";
-export const COLOR_BOSCO: string = "#cc3300";
-export const COLOR_JOLICOEUR: string = "#ffc107";
-
-export const VENUE_STEBERNADETTE: string = "Parc Ste-Bernadette";
-export const VENUE_MOUSSETTE: string = "Parc Moussette";
-export const VENUE_FONTAINE: string = "Parc Fontaine";
-export const VENUE_BOSCO: string = "Parc St-Jean-De-Bosco - Parc St-Jean-Bosco";
-export const VENUE_JOLICOEUR: string = "Parc Jolicoeur";
-
-export const VENUE_STEBERNADETTE_TIMESLOT: string = VENUE_STEBERNADETTE + TIMESLOT_EVENT_TYPE;
-export const VENUE_MOUSSETTE_TIMESLOT: string = VENUE_MOUSSETTE + TIMESLOT_EVENT_TYPE;
-export const VENUE_FONTAINE_TIMESLOT: string = VENUE_FONTAINE + TIMESLOT_EVENT_TYPE;
-export const VENUE_BOSCO_TIMESLOT: string = VENUE_BOSCO + TIMESLOT_EVENT_TYPE;
-export const VENUE_JOLICOEUR_TIMESLOT: string = VENUE_JOLICOEUR + TIMESLOT_EVENT_TYPE;
+export const COLOR_RUSSELMARTIN: string ="#0066cc";
+export const VENUE_RUSSELMARTIN: string = "Parc Russell Martin - Terrain Russell Martin";
 
 export const VENUE_CLASS = new Map<string, string>(
     [
-      [VENUE_STEBERNADETTE, "venue-blue"],
-      [VENUE_MOUSSETTE, "venue-green"],
-      [VENUE_FONTAINE, "venue-purple"],
-      [VENUE_BOSCO, "venue-red"],
-      [VENUE_JOLICOEUR, "venue-yellow"],
-      [VENUE_STEBERNADETTE_TIMESLOT, "venue-blue"],
-      [VENUE_MOUSSETTE_TIMESLOT, "venue-green"],
-      [VENUE_FONTAINE_TIMESLOT, "venue-purple"],
-      [VENUE_BOSCO_TIMESLOT, "venue-red"],
-      [VENUE_JOLICOEUR_TIMESLOT, "venue-yellow"],
+      [VENUE_RUSSELMARTIN, "venue-blue"],
       ["", "venue-default"],
     ]
   );
 
   export const VENUE_COLORS = new Map<string, string>(
     [
-      [VENUE_MOUSSETTE, COLOR_MOUSSETTE],
-      [VENUE_STEBERNADETTE, COLOR_STEBERNADETTE],
-      [VENUE_FONTAINE, COLOR_FONTAINE],
-      [VENUE_BOSCO, COLOR_BOSCO],
-      [VENUE_JOLICOEUR, COLOR_JOLICOEUR],
-      [VENUE_MOUSSETTE_TIMESLOT, COLOR_MOUSSETTE],
-      [VENUE_STEBERNADETTE_TIMESLOT, COLOR_STEBERNADETTE],
-      [VENUE_FONTAINE_TIMESLOT, COLOR_FONTAINE],
-      [VENUE_BOSCO_TIMESLOT, COLOR_BOSCO],
-      [VENUE_JOLICOEUR_TIMESLOT, COLOR_JOLICOEUR],
+      [VENUE_RUSSELMARTIN, COLOR_RUSSELMARTIN],
       ["", "#000"],
     ]
   );
