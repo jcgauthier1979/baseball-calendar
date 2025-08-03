@@ -18,8 +18,8 @@ export async function loadEvents(fileName: string, fileUid: string, eventType: s
   }
 
   const parsedEvents: Types.CalendarEvent[] = parsed.data.map((row, index) => {
-    const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-    const end = new Date(`${row.Date}T${row["End Time"]}:00`);
+    const start = new Date(`${Helpers.getCsvDate(row.Date)}T${row["Start Time"]}:00`);
+    const end = new Date(`${Helpers.getCsvDate(row.Date)}T${row["End Time"]}:00`);
     const uid = row["Venue"] + `${row.Date}T${row["Start Time"]}:00` + `${row.Date}T${row["End Time"]}:00`;
     const title = eventType == Consts.GAME_EVENT_TYPE ?
       `${row["Home Team Name"]}\n${row["Away Team Name"]}` : Helpers.filterTeamName(row["Team Names"]);

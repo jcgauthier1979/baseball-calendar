@@ -17,14 +17,14 @@ body {
 
 #banner img {
   padding: 8px;
-  background-color: #12294b;
+  background-color: #3b0c10;
 }
 
 .triangle {
   width: 0;
   height: 0;
   border-bottom: 96px solid transparent;
-  border-left: 45px solid #12294b; /* 45-degree triangle */
+  border-left: 45px solid #3b0c10; /* 45-degree triangle */
   display: inline-block;
 }
 
@@ -51,6 +51,7 @@ body {
   border-bottom: 1px solid #dee2e6;
   padding: 10px;
   background-color: #fff;
+  overflow-x: auto;
 }
 
 .checkbox-venue {
@@ -60,6 +61,14 @@ body {
 
 .checkbox-venue:has(.Mui-checked) {
   background-color: #f1f1f1;
+}
+
+.venue-stack-group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 100px;
 }
 
 #filters .material-icons-outlined {
@@ -141,6 +150,54 @@ body {
   border-bottom: 1px solid #0066cc;
 }
 
+.venue-blue-2 .rbc-event-content,
+.venue-blue-2 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #0077cc !important;
+  border-top: 1px solid #0077cc;
+  border-right: 1px solid #0077cc;
+  border-bottom: 1px solid #0077cc;
+}
+
+.venue-blue-3 .rbc-event-content,
+.venue-blue-3 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #0088cc !important;
+  border-top: 1px solid #0088cc;
+  border-right: 1px solid #0088cc;
+  border-bottom: 1px solid #0088cc;
+}
+
+.venue-blue-4 .rbc-event-content,
+.venue-blue-4 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #0099cc !important;
+  border-top: 1px solid #0099cc;
+  border-right: 1px solid #0099cc;
+  border-bottom: 1px solid #0099cc;
+}
+
+.venue-blue-5 .rbc-event-content,
+.venue-blue-5 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #00aacc !important;
+  border-top: 1px solid #00aacc;
+  border-right: 1px solid #00aacc;
+  border-bottom: 1px solid #00aacc;
+}
+
+.venue-blue-6 .rbc-event-content,
+.venue-blue-6 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #00aacc !important;
+  border-top: 1px solid #00aacc;
+  border-right: 1px solid #00aacc;
+  border-bottom: 1px solid #00aacc;
+}
+
+.venue-blue-7 .rbc-event-content,
+.venue-blue-7 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #00aacc !important;
+  border-top: 1px solid #00aacc;
+  border-right: 1px solid #00aacc;
+  border-bottom: 1px solid #00aacc;
+}
+
 .venue-green .rbc-event-content,
 .venue-green .rbc-agenda-event-cell-content {
   border-left: 15px solid #339933 !important;
@@ -171,6 +228,46 @@ body {
   border-top: 1px solid #ffc107;
   border-right: 1px solid #ffc107;
   border-bottom: 1px solid #ffc107;
+}
+
+.venue-salmon .rbc-event-content,
+.venue-salmon .rbc-agenda-event-cell-content {
+  border-left: 15px solid #FF8069 !important;
+  border-top: 1px solid #FF8069;
+  border-right: 1px solid #FF8069;
+  border-bottom: 1px solid #FF8069;
+}
+
+.venue-lyla .rbc-event-content,
+.venue-lyla .rbc-agenda-event-cell-content {
+  border-left: 15px solid #FFADF6 !important;
+  border-top: 1px solid #FFADF6;
+  border-right: 1px solid #FFADF6;
+  border-bottom: 1px solid #FFADF6;
+}
+
+.venue-light-green-1 .rbc-event-content,
+.venue-light-green-1 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #75FF7A !important;
+  border-top: 1px solid #75FF7A;
+  border-right: 1px solid #75FF7A;
+  border-bottom: 1px solid #75FF7A;
+}
+
+.venue-light-green-2 .rbc-event-content,
+.venue-light-green-2 .rbc-agenda-event-cell-content {
+  border-left: 15px solid #75FF7A !important;
+  border-top: 1px solid #75FF7A;
+  border-right: 1px solid #75FF7A;
+  border-bottom: 1px solid #75FF7A;
+}
+
+.venue-light-grey .rbc-event-content,
+.venue-light-grey .rbc-agenda-event-cell-content {
+  border-left: 15px solid #ADADAD !important;
+  border-top: 1px solid #ADADAD;
+  border-right: 1px solid #ADADAD;
+  border-bottom: 1px solid #ADADAD;
 }
 
 .venue-default .rbc-event-content,
@@ -319,12 +416,12 @@ overflow: inherit !important;
   }
   #banner img {
   padding: 4px;
-  background-color: #12294b;
+  background-color: #3b0c10;
   height: 40px;
 }
   .triangle {
     border-bottom: 48px solid transparent;
-    border-left: 23px solid #12294b; /* 45-degree triangle */
+    border-left: 23px solid #3b0c10; /* 45-degree triangle */
   }
   #filters {
     display: none;
@@ -350,6 +447,15 @@ overflow: inherit !important;
     position: fixed;
     top: 49px;
     z-index: 1000;
+  }
+
+  .venue-stack-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-height: unset !important;
+    
   }
 }
 

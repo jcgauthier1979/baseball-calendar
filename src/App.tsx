@@ -20,17 +20,22 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const uid : string = Date.now().toString();
 
-  const [isVisibleSteBernadette, setIsVisibleSteBernadette] = useState<boolean>(true);
-  const [isVisibleMoussette, setIsVisibleMoussette] = useState<boolean>(true);
-  const [isVisibleFontaine, setIsVisibleFontaine] = useState<boolean>(true);
-  const [isVisibleBosco, setIsVisibleBosco] = useState<boolean>(true);
-  const [isVisibleJolicoeur, setIsVisibleJolicoeur] = useState<boolean>(true);
-
-  const [isVisibleSteBernadetteTimeslot, setIsVisibleSteBernadetteTimeslot] = useState<boolean>(false);
-  const [isVisibleMoussetteTimeslot, setIsVisibleMoussetteTimeslot] = useState<boolean>(false);
-  const [isVisibleFontaineTimeslot, setIsVisibleFontaineTimeslot] = useState<boolean>(false);
-  const [isVisibleBoscoTimeslot, setIsVisibleBoscoTimeslot] = useState<boolean>(false);
-  const [isVisibleJolicoeurTimeslot, setIsVisibleJolicoeurTimeslot] = useState<boolean>(false);
+  const [isVisibleSC1, setIsVisibleSC1] = useState<boolean>(true);
+  const [isVisibleSC2, setIsVisibleSC2] = useState<boolean>(true);
+  const [isVisibleSC3, setIsVisibleSC3] = useState<boolean>(true);
+  const [isVisibleSC4, setIsVisibleSC4] = useState<boolean>(true);
+  const [isVisibleSC5, setIsVisibleSC5] = useState<boolean>(true);
+  const [isVisibleSCC1, setIsVisibleSCC1] = useState<boolean>(true);
+  const [isVisibleSCC2, setIsVisibleSCC2] = useState<boolean>(true);
+  const [isVisibleStRene, setIsVisibleStRene] = useState<boolean>(true);
+  const [isVisibleRiviera, setIsVisibleRiviera] = useState<boolean>(true);
+  const [isVisibleLimbour, setIsVisibleLimbour] = useState<boolean>(true);
+  const [isVisibleRacicot, setIsVisibleRacicot] = useState<boolean>(true);
+  const [isVisibleLP, setIsVisibleLP] = useState<boolean>(true);
+  const [isVisibleBelisle, setIsVisibleBelisle] = useState<boolean>(true);
+  const [isVisibleM1, setIsVisibleM1] = useState<boolean>(true);
+  const [isVisibleM2, setIsVisibleM2] = useState<boolean>(true);
+  const [isVisibleMG, setIsVisibleMG] = useState<boolean>(true);
 
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -47,26 +52,7 @@ function App() {
         setLoadingMessage("Chargement des pratiques...");
         const parsedPracticesEvents = await Data.loadEvents("practices.csv", uid, Consts.PRACTICE_EVENT_TYPE);
 
-        var parsedGameEventsMap = new Map(parsedGameEvents.map(g => [g.uid, g]));
-        var parsedPracticesEventsMap = new Map(parsedPracticesEvents.map(p => [p.uid, p]));
-
-        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_STEBERNADETTE)}...`);
-        const stebernadetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_STEBERNADETTE, "timeslots-stebernadette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
-
-        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_MOUSSETTE)}...`);
-        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
-
-        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_FONTAINE)}...`);
-        const fontaineTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_FONTAINE, "timeslots-fontaine.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
-
-        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_BOSCO)}...`);
-        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
-
-        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_JOLICOEUR)}...`);
-        const jolicoeurTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_JOLICOEUR, "timeslots-jolicoeur.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
-
-        const timeslotsEvents = ([...stebernadetteTimeslotsEvents, ...moussetteTimeslotsEvents, ...fontaineTimeslotsEvents, ...boscoTimeslotsEvents, ...jolicoeurTimeslotsEvents]);
-        setEvents([...parsedGameEvents, ...parsedPracticesEvents, ...timeslotsEvents]);
+        setEvents([...parsedGameEvents, ...parsedPracticesEvents ]);
 
         setLoadingMessage("Chargement du calendrier...");
         setFilteredEvents([...parsedGameEvents, ...parsedPracticesEvents]
@@ -90,28 +76,40 @@ function App() {
 
   // When a venue is checked or unchecked
   useEffect(() => {
-    setFilteredEvents(events.filter(e => (!isVisibleSteBernadette ? e.venue != Consts.VENUE_STEBERNADETTE : e)
-      && (!isVisibleMoussette ? e.venue != Consts.VENUE_MOUSSETTE : e)
-      && (!isVisibleFontaine ? e.venue != Consts.VENUE_FONTAINE : e)
-      && (!isVisibleBosco ? e.venue != Consts.VENUE_BOSCO : e)
-      && (!isVisibleJolicoeur ? e.venue != Consts.VENUE_JOLICOEUR : e)
-      && (!isVisibleSteBernadetteTimeslot ? e.venue != Consts.VENUE_STEBERNADETTE_TIMESLOT : e)
-      && (!isVisibleMoussetteTimeslot ? e.venue != Consts.VENUE_MOUSSETTE_TIMESLOT : e)
-      && (!isVisibleFontaineTimeslot ? e.venue != Consts.VENUE_FONTAINE_TIMESLOT : e)
-      && (!isVisibleBoscoTimeslot ? e.venue != Consts.VENUE_BOSCO_TIMESLOT : e)
-      && (!isVisibleJolicoeurTimeslot ? e.venue != Consts.VENUE_JOLICOEUR_TIMESLOT : e)
+    setFilteredEvents(events.filter(e => (!isVisibleSC1 ? e.venue != Consts.VENUE_SC1 : e)
+    && (!isVisibleSC2 ? e.venue != Consts.VENUE_SC2 : e)
+    && (!isVisibleSC3 ? e.venue != Consts.VENUE_SC3 : e)
+    && (!isVisibleSC4 ? e.venue != Consts.VENUE_SC4 : e)
+    && (!isVisibleSC5 ? e.venue != Consts.VENUE_SC5 : e)
+    && (!isVisibleSCC1 ? e.venue != Consts.VENUE_SCC1 : e)
+    && (!isVisibleSCC2 ? e.venue != Consts.VENUE_SCC2 : e)
+    && (!isVisibleStRene ? e.venue != Consts.VENUE_STRENE : e)
+    && (!isVisibleRiviera ? e.venue != Consts.VENUE_RIVIERA : e)
+    && (!isVisibleLimbour ? e.venue != Consts.VENUE_LIMBOUR : e)
+    && (!isVisibleRacicot ? e.venue != Consts.VENUE_RACICOT : e)
+    && (!isVisibleLP ? e.venue != Consts.VENUE_LP : e)
+    && (!isVisibleBelisle ? e.venue != Consts.VENUE_BELISLE : e)
+    && (!isVisibleM1 ? e.venue != Consts.VENUE_M1 : e)
+    && (!isVisibleM2 ? e.venue != Consts.VENUE_M2 : e)
+    && (!isVisibleMG ? e.venue != Consts.VENUE_MG : e)
       ));
   }, [
-    isVisibleSteBernadette,
-    isVisibleMoussette,
-    isVisibleFontaine,
-    isVisibleBosco,
-    isVisibleJolicoeur,
-    isVisibleSteBernadetteTimeslot,
-    isVisibleMoussetteTimeslot,
-    isVisibleFontaineTimeslot,
-    isVisibleBoscoTimeslot,
-    isVisibleJolicoeurTimeslot
+    isVisibleSC1,
+    isVisibleSC2,
+    isVisibleSC3,
+    isVisibleSC4,
+    isVisibleSC5,
+    isVisibleSCC1,
+    isVisibleSCC2,
+    isVisibleStRene,
+    isVisibleRiviera,
+    isVisibleLimbour,
+    isVisibleRacicot,
+    isVisibleLP,
+    isVisibleBelisle,
+    isVisibleM1,
+    isVisibleM2,
+    isVisibleMG,
   ]);
 
   useEffect(() => {
@@ -268,59 +266,71 @@ function App() {
             </Button>
 
           </div>
-          <div className="venue-group">
-            <div className="venue-name">Ste-Bernadette</div>
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleSteBernadette(e.target.checked)}
-              sx={{ color: Consts.COLOR_STEBERNADETTE, '&.Mui-checked': { color: Consts.COLOR_STEBERNADETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+          
+          <div className="venue-stack-group">
+            <FormControlLabel label="Sanscartier 1" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSC1(e.target.checked)}
+              sx={{ color: Consts.COLOR_SC1, '&.Mui-checked': { color: Consts.COLOR_SC1, class: 'checkbox-venue-checked' } }} />}
             />
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox onChange={(e) => setIsVisibleSteBernadetteTimeslot(e.target.checked)}
-              sx={{ color: Consts.COLOR_STEBERNADETTE, '&.Mui-checked': { color: Consts.COLOR_STEBERNADETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            <FormControlLabel label="Sanscartier 2" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSC2(e.target.checked)}
+              sx={{ color: Consts.COLOR_SC2, '&.Mui-checked': { color: Consts.COLOR_SC2, class: 'checkbox-venue-checked' } }} />}
             />
-          </div>
-          <div className="venue-group">
-            <div className="venue-name">Moussette</div>
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleMoussette(e.target.checked)}
-              sx={{ color: Consts.COLOR_MOUSSETTE, '&.Mui-checked': { color: Consts.COLOR_MOUSSETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            <FormControlLabel label="Sanscartier 3" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSC3(e.target.checked)}
+              sx={{ color: Consts.COLOR_SC3, '&.Mui-checked': { color: Consts.COLOR_SC3, class: 'checkbox-venue-checked' } }} />}
             />
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox onChange={(e) => setIsVisibleMoussetteTimeslot(e.target.checked)}
-              sx={{ color: Consts.COLOR_MOUSSETTE, '&.Mui-checked': { color: Consts.COLOR_MOUSSETTE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            <FormControlLabel label="Sanscartier 4" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSC4(e.target.checked)}
+              sx={{ color: Consts.COLOR_SC4, '&.Mui-checked': { color: Consts.COLOR_SC4, class: 'checkbox-venue-checked' } }} />}
             />
-          </div>
-          <div className="venue-group">
-            <div className="venue-name">Fontaine</div>
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleFontaine(e.target.checked)}
-              sx={{ color: Consts.COLOR_FONTAINE, '&.Mui-checked': { color: Consts.COLOR_FONTAINE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            <FormControlLabel label="Sanscartier 5" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSC5(e.target.checked)}
+              sx={{ color: Consts.COLOR_SC5, '&.Mui-checked': { color: Consts.COLOR_SC5, class: 'checkbox-venue-checked' } }} />}
             />
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox onChange={(e) => setIsVisibleFontaineTimeslot(e.target.checked)}
-              sx={{ color: Consts.COLOR_FONTAINE, '&.Mui-checked': { color: Consts.COLOR_FONTAINE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            <FormControlLabel label="SC - Cage 1" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSCC1(e.target.checked)}
+              sx={{ color: Consts.COLOR_SCC1, '&.Mui-checked': { color: Consts.COLOR_SCC1, class: 'checkbox-venue-checked' } }} />}
             />
-          </div>
-          <div className="venue-group">
-            <div className="venue-name">St-Jean-Bosco</div>
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleBosco(e.target.checked)}
-              sx={{ color: Consts.COLOR_BOSCO, '&.Mui-checked': { color: Consts.COLOR_BOSCO, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            <FormControlLabel label="SC - Cage 2" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleSCC2(e.target.checked)}
+              sx={{ color: Consts.COLOR_SCC2, '&.Mui-checked': { color: Consts.COLOR_SCC2, class: 'checkbox-venue-checked' } }} />}
             />
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox onChange={(e) => setIsVisibleBoscoTimeslot(e.target.checked)}
-              sx={{ color: Consts.COLOR_BOSCO, '&.Mui-checked': { color: Consts.COLOR_BOSCO, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            <FormControlLabel label="St-René" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleStRene(e.target.checked)}
+              sx={{ color: Consts.COLOR_STRENE, '&.Mui-checked': { color: Consts.COLOR_STRENE, class: 'checkbox-venue-checked' } }} />}
             />
-          </div>
-          <div className="venue-group">
-            <div className="venue-name">Jolicoeur</div>
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox defaultChecked  onChange={(e) => setIsVisibleJolicoeur(e.target.checked) }
-              sx={{ color: Consts.COLOR_JOLICOEUR, '&.Mui-checked': { color: Consts.COLOR_JOLICOEUR, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            <FormControlLabel label="Riviera" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleRiviera(e.target.checked)}
+              sx={{ color: Consts.COLOR_RIVIERA, '&.Mui-checked': { color: Consts.COLOR_RIVIERA, class: 'checkbox-venue-checked' } }} />}
             />
-            <FormControlLabel label="" className="checkbox-venue"
-              control={<><Checkbox onChange={(e) => setIsVisibleJolicoeurTimeslot(e.target.checked)}
-              sx={{ color: Consts.COLOR_JOLICOEUR, '&.Mui-checked': { color: Consts.COLOR_JOLICOEUR, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            <FormControlLabel label="Limbour" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleLimbour(e.target.checked)}
+              sx={{ color: Consts.COLOR_LIMBOUR, '&.Mui-checked': { color: Consts.COLOR_LIMBOUR, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Racicot" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleRacicot(e.target.checked)}
+              sx={{ color: Consts.COLOR_RACICOT, '&.Mui-checked': { color: Consts.COLOR_RACICOT, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Louis-Phillion" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleLP(e.target.checked)}
+              sx={{ color: Consts.COLOR_LP, '&.Mui-checked': { color: Consts.COLOR_LP, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Bélisle" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleBelisle(e.target.checked)}
+              sx={{ color: Consts.COLOR_BELISLE, '&.Mui-checked': { color: Consts.COLOR_BELISLE, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Moreau 1" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleM1(e.target.checked)}
+              sx={{ color: Consts.COLOR_M1, '&.Mui-checked': { color: Consts.COLOR_M1, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Moreau 2" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleM2(e.target.checked)}
+              sx={{ color: Consts.COLOR_M2, '&.Mui-checked': { color: Consts.COLOR_M2, class: 'checkbox-venue-checked' } }} />}
+            />
+            <FormControlLabel label="Marcel-Gladu" className="checkbox-venue"
+              control={<Checkbox defaultChecked onChange={(e) => setIsVisibleMG(e.target.checked)}
+              sx={{ color: Consts.COLOR_MG, '&.Mui-checked': { color: Consts.COLOR_MG, class: 'checkbox-venue-checked' } }} />}
             />
           </div>
         </FormGroup>

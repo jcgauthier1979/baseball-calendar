@@ -45,6 +45,8 @@ export function filterVenue(name : string) {
 
   // Remove timeslot suffix
   name = name.replace(Consts.TIMESLOT_EVENT_TYPE, "");
+  name = name.replace("80 rue ", "");
+  name = name.replace(" - Terrain", "");
   return name;
 }
 
@@ -70,4 +72,12 @@ export function dateMonthStart(date: Date): Date {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
   return new Date(`${year}-${month}-01T00:00:00.000-04:00`);
+}
+
+export function getCsvDate(rawDate: string) : string {
+  if (rawDate.includes("/")) {
+    // Convert
+    rawDate = `${rawDate.substring(6, 10)}-${rawDate.substring(3, 5)}-${rawDate.substring(0, 2)}`
+  }
+  return  rawDate;
 }
