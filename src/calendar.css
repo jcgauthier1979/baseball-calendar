@@ -144,26 +144,26 @@ body {
 
 .venue-blue .rbc-event-content,
 .venue-blue .rbc-agenda-event-cell-content {
-  border-left: 15px solid #0066cc !important;
-  border-top: 1px solid #0066cc;
-  border-right: 1px solid #0066cc;
-  border-bottom: 1px solid #0066cc;
+  border-left: 15px solid #000445 !important;
+  border-top: 1px solid #000445;
+  border-right: 1px solid #000445;
+  border-bottom: 1px solid #000445;
 }
 
 .venue-blue-2 .rbc-event-content,
 .venue-blue-2 .rbc-agenda-event-cell-content {
-  border-left: 15px solid #0077cc !important;
-  border-top: 1px solid #0077cc;
-  border-right: 1px solid #0077cc;
-  border-bottom: 1px solid #0077cc;
+  border-left: 15px solid #004B94 !important;
+  border-top: 1px solid #004B94;
+  border-right: 1px solid #004B94;
+  border-bottom: 1px solid #004B94;
 }
 
 .venue-blue-3 .rbc-event-content,
 .venue-blue-3 .rbc-agenda-event-cell-content {
-  border-left: 15px solid #0088cc !important;
-  border-top: 1px solid #0088cc;
-  border-right: 1px solid #0088cc;
-  border-bottom: 1px solid #0088cc;
+  border-left: 15px solid #0066cc !important;
+  border-top: 1px solid #0066cc;
+  border-right: 1px solid #0066cc;
+  border-bottom: 1px solid #0066cc;
 }
 
 .venue-blue-4 .rbc-event-content,
@@ -176,26 +176,26 @@ body {
 
 .venue-blue-5 .rbc-event-content,
 .venue-blue-5 .rbc-agenda-event-cell-content {
-  border-left: 15px solid #00aacc !important;
-  border-top: 1px solid #00aacc;
-  border-right: 1px solid #00aacc;
-  border-bottom: 1px solid #00aacc;
+  border-left: 15px solid #7DBBFF !important;
+  border-top: 1px solid #7DBBFF;
+  border-right: 1px solid #7DBBFF;
+  border-bottom: 1px solid #7DBBFF;
 }
 
 .venue-blue-6 .rbc-event-content,
 .venue-blue-6 .rbc-agenda-event-cell-content {
-  border-left: 15px solid #00aacc !important;
-  border-top: 1px solid #00aacc;
-  border-right: 1px solid #00aacc;
-  border-bottom: 1px solid #00aacc;
+  border-left: 15px solid #7D96AD !important;
+  border-top: 1px solid #7D96AD;
+  border-right: 1px solid #7D96AD;
+  border-bottom: 1px solid #7D96AD;
 }
 
 .venue-blue-7 .rbc-event-content,
 .venue-blue-7 .rbc-agenda-event-cell-content {
-  border-left: 15px solid #00aacc !important;
-  border-top: 1px solid #00aacc;
-  border-right: 1px solid #00aacc;
-  border-bottom: 1px solid #00aacc;
+  border-left: 15px solid #BDC7DB !important;
+  border-top: 1px solid #BDC7DB;
+  border-right: 1px solid #BDC7DB;
+  border-bottom: 1px solid #BDC7DB;
 }
 
 .venue-green .rbc-event-content,
@@ -455,8 +455,12 @@ overflow: inherit !important;
     flex-wrap: wrap;
     gap: 4px;
     max-height: unset !important;
-    
+    padding-left: 8px;
+    flex-basis: 100%;
   }
+   .venue-stack-group label {
+    flex-basis: 45%;
+   }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
