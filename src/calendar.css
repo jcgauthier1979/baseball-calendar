@@ -53,29 +53,6 @@ body {
   background-color: #fff;
 }
 
-#footer {
-  display: flex;
-  padding: 8px;
-  justify-content: center;
-}
-
-#footer .footer-link {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-
-#footer .ext-link {
-  color: #333;
-  font-weight: 600;
-  text-decoration: none;
-  background-color: #f1f1f1;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  border-radius: 5px;
-}
-
 .checkbox-venue {
   padding-right: 12px;
   border-radius: 4px;
@@ -328,26 +305,51 @@ body {
 overflow: inherit !important;
 }
 
+#footer {
+  display: block;
+  padding: 8px;
+  justify-content: center;
+}
 
-@media only screen and (max-width: 768) {
+#footer .footer-header {
+  margin-bottom: 12px;
+}
 
+#footer .footer-link {
+  margin-left: 0;
+  margin-bottom: 12px;
+}
+
+#footer .ext-link {
+ color: #333;
+  font-weight: 600;
+  text-decoration: none;
+  background-color: #f1f1f1;
+  padding-left: 0;
+  padding-right: 8px;
+  padding-top: 4px;
+  border-radius: 5px;
+}
+
+@media only screen and (max-width: 768px) {
+}
+
+@media only screen and (min-width: 769px) {
   #footer {
-    display: block;
-    
-  }
-
-  #footer .footer-header {
-    margin-bottom: 12px;
+    display: flex;
   }
 
   #footer .footer-link {
-    margin-left: 0;
-    margin-bottom: 12px;
+    margin-left: 8px;
+    margin-right: 8px;
   }
+
   #footer .ext-link {
-    padding-left: 0;
+    padding-left: 8px;
+    padding-bottom: 4px;
   }
 }
+
 @media only screen and (max-width: 992px) {
   #banner {
     min-height: 48px;
