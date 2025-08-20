@@ -94,7 +94,7 @@ body {
 .loader {
     width: 48px;
     height: 48px;
-    border: 5px solid #FFF;
+    border: 5px solid rgb(250, 250, 250);
     border-bottom-color: #FF3D00;
     border-radius: 50%;
     display: inline-block;

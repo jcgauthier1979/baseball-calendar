@@ -92,3 +92,5 @@ export const localizer = dateFnsLocalizer({
   getDay,
   locales
 });
+
+export const TIMESLOTS_CSV_HEADER = "Date,Start Time,End Time,Field (Alias),Field,Venue,Event Type,Identifier,Organization,Secondary Organization,Schedule,Category,Home Team,Away Team,Practice Teams,Practice Type,Timeslot Type,Timeslot Sub Type,Timeslot Shared Leagues,Timeslot Category Restrictions,Comments,Notes";

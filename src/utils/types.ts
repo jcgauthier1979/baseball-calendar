@@ -13,6 +13,32 @@ export type CsvRow = {
   "Team Names": string;
 };
 
+// Based on the EN version
+export type TimeSlotCsvRow = {
+  Date: string;
+  "Start Time": string;
+  "End Time": string;
+  "Field (Alias)": string;
+  Field: string;
+  Venue: string;
+  "Event Type": string;
+  Identifier: string;
+  Organisation: string;
+  "Secondary Organization": string
+  Schedule: string;
+  Category: string;
+  "Home Team": string;
+  "Visitor Team": string;
+  "Practice Teams": string;
+  "Practice Type": string;
+  "Timeslot Type": string;
+  "Timeslot Sub Type": string;
+  "Timeslot Shared League": string;
+  "Timeslot Category Restrictions": string;
+  Comments: string;
+  Notes: string;
+}
+
 export type TimeslotItem = {
   venue: string;
   date: string;

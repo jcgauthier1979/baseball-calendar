@@ -51,19 +51,19 @@ function App() {
         var parsedPracticesEventsMap = new Map(parsedPracticesEvents.map(p => [p.uid, p]));
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_STEBERNADETTE)}...`);
-        const stebernadetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_STEBERNADETTE, "timeslots-stebernadette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const stebernadetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_STEBERNADETTE, "timeslots-stebernadette.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_MOUSSETTE)}...`);
-        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_FONTAINE)}...`);
-        const fontaineTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_FONTAINE, "timeslots-fontaine.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const fontaineTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_FONTAINE, "timeslots-fontaine.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_BOSCO)}...`);
-        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_JOLICOEUR)}...`);
-        const jolicoeurTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_JOLICOEUR, "timeslots-jolicoeur.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const jolicoeurTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_JOLICOEUR, "timeslots-jolicoeur.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         const timeslotsEvents = ([...stebernadetteTimeslotsEvents, ...moussetteTimeslotsEvents, ...fontaineTimeslotsEvents, ...boscoTimeslotsEvents, ...jolicoeurTimeslotsEvents]);
         setEvents([...parsedGameEvents, ...parsedPracticesEvents, ...timeslotsEvents]);
