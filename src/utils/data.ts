@@ -18,9 +18,10 @@ export async function loadEvents(fileName: string, fileUid: string, eventType: s
   }
 
   const parsedEvents: Types.CalendarEvent[] = parsed.data.map((row, index) => {
-    const start = new Date(`${row.Date}T${row["Start Time"]}:00`);
-    const end = new Date(`${row.Date}T${row["End Time"]}:00`);
-    const uid = row["Venue"] + `${row.Date}T${row["Start Time"]}:00` + `${row.Date}T${row["End Time"]}:00`;
+    const itemDate = Helpers.getCsvDate(row.Date);
+    const start = new Date(`${itemDate}T${row["Start Time"]}:00`);
+    const end = new Date(`${itemDate}T${row["End Time"]}:00`);
+    const uid = row["Venue"] + `${itemDate}T${row["Start Time"]}:00` + `${itemDate}T${row["End Time"]}:00`;
     const title = eventType == Consts.GAME_EVENT_TYPE ?
       `${row["Home Team Name"]}\n${row["Away Team Name"]}` : Helpers.filterTeamName(row["Team Names"]);
     const homeTeam = eventType == Consts.GAME_EVENT_TYPE ?
@@ -48,7 +49,16 @@ export async function loadEvents(fileName: string, fileUid: string, eventType: s
   return parsedEvents;
 }
 
-export async function loadVenueTimeslots(venueName: string, fileName: string, fileUid: string,
+/**
+ * Obsolete: Was used before it was possible to export as CSV.
+ * @param venueName 
+ * @param fileName 
+ * @param fileUid 
+ * @param parsedGameEventsMap 
+ * @param parsedPracticesEventsMap 
+ * @returns 
+ */
+export async function loadVenueTimeslotsJson(venueName: string, fileName: string, fileUid: string,
   parsedGameEventsMap: Map<string, Types.CalendarEvent>,
   parsedPracticesEventsMap: Map<string, Types.CalendarEvent>) {
 
@@ -80,6 +90,62 @@ export async function loadVenueTimeslots(venueName: string, fileName: string, fi
 
   const now = new Date();
   const filteredParsedTimeslotsEvents = parsedTimeslotsEvents.filter(
+    ts => (
+      !parsedGameEventsMap.has(ts.uid)
+      && !parsedPracticesEventsMap.has(ts.uid)
+      && ts.start > now
+    )
+  );
+  return filteredParsedTimeslotsEvents;
+}
+
+export async function loadVenueTimeslots(venueName: string, fileName: string, fileUid: string,
+  parsedGameEventsMap: Map<string, Types.CalendarEvent>,
+  parsedPracticesEventsMap: Map<string, Types.CalendarEvent>) {
+
+  const timeslotsResponse = await fetch(Consts.APP_PATH + '/' + fileName + '?' + fileUid);
+  if (!timeslotsResponse.ok) throw new Error('Failed to fetch timeslots CSV');
+
+  var csvText = await timeslotsResponse.text();
+  // Replace header in case export was not in EN
+  csvText = Helpers.removeFirstLine(csvText);
+  csvText = `${Consts.TIMESLOTS_CSV_HEADER}\n${csvText}`;
+
+  const parsed =  Papa.parse<Types.TimeSlotCsvRow>(csvText, {
+    header: true
+  });
+
+  if (parsed.errors.length) {
+    throw new Error(parsed.errors.map(e => e.message).join(', '));
+  }
+
+  parsed.data = parsed.data.filter(r => r.Organization == Consts.ORGANIZATION);
+
+  const parsedTimeslotsItems : Types.CalendarEvent[] = parsed.data.map((row, index) => {
+    const itemDate = Helpers.getCsvDate(row.Date);
+    const start = new Date(`${itemDate}T${row["Start Time"]}:00`);
+    const end = new Date(`${itemDate}T${row["End Time"]}:00`);
+    const uid = row.Venue + `${itemDate}T${row["Start Time"]}:00` + `${itemDate}T${row["End Time"]}:00`;
+
+    return {
+      type: Consts.TIMESLOT_EVENT_TYPE,
+      id: index,
+      uid: uid,
+      title: "",
+      homeTeam: "",
+      awayTeam: "",
+      name: "",
+      start: start,
+      end: end,
+      allDay: false,
+      venue: venueName + Consts.TIMESLOT_EVENT_TYPE,
+      status: "",
+      comments: ""
+    };
+  });
+
+  const now = new Date();
+  const filteredParsedTimeslotsEvents = parsedTimeslotsItems.filter(
     ts => (
       !parsedGameEventsMap.has(ts.uid)
       && !parsedPracticesEventsMap.has(ts.uid)

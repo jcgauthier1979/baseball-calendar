@@ -7,6 +7,7 @@ export const GAME_EVENT_TYPE : string = "game";
 export const PRACTICE_EVENT_TYPE : string = "practice";
 export const TIMESLOT_EVENT_TYPE : string = "timeslot";
 export const APP_PATH : string = import.meta.env.VITE_APP_PATH;
+export const ORGANIZATION : string = "ASSOCIATION BASEBALL AMATEUR DE HULL";
 
 export const COLOR_GAME: string ="#fefefe";
 export const COLOR_PRACTICE: string ="#e6f2ff";
@@ -72,3 +73,5 @@ export const localizer = dateFnsLocalizer({
   getDay,
   locales
 });
+
+export const TIMESLOTS_CSV_HEADER = "Date,Start Time,End Time,Field (Alias),Field,Venue,Event Type,Identifier,Organization,Secondary Organization,Schedule,Category,Home Team,Away Team,Practice Teams,Practice Type,Timeslot Type,Timeslot Sub Type,Timeslot Shared Leagues,Timeslot Category Restrictions,Comments,Notes";

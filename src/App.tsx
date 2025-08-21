@@ -21,8 +21,11 @@ function App() {
   const uid : string = Date.now().toString();
 
   const [isVisibleLongueAllee, setIsVisibleLongueAllee] = useState<boolean>(true);
+  const [isVisibleLongueAlleeTimeslot, setIsVisibleLongueAlleeTimeslot] = useState<boolean>(false);
   const [isVisibleThibault, setIsVisibleThibault] = useState<boolean>(true);
+  const [isVisibleThibaultTimeslot, setIsVisibleThibaultTimeslot] = useState<boolean>(false);
   const [isVisiblePerkins, setIsVisiblePerkins] = useState<boolean>(true);
+  const [isVisiblePerkinsTimeslot, setIsVisiblePerkinsTimeslot] = useState<boolean>(false);
   const [isVisiblePerkinsCage, setIsVisiblePerkinsCage] = useState<boolean>(true);
 
   const [loadingMessage, setLoadingMessage] = useState<string>("");
@@ -40,7 +43,20 @@ function App() {
         setLoadingMessage("Chargement des pratiques...");
         const parsedPracticesEvents = await Data.loadEvents("practices.csv", uid, Consts.PRACTICE_EVENT_TYPE);
 
-        setEvents([...parsedGameEvents, ...parsedPracticesEvents]);
+        var parsedGameEventsMap = new Map(parsedGameEvents.map(g => [g.uid, g]));
+        var parsedPracticesEventsMap = new Map(parsedPracticesEvents.map(p => [p.uid, p]));
+
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_LONGUEALLEE)}...`);
+        const longuealleeTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_LONGUEALLEE, "timeslots-longueallee.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_THIBAULT)}...`);
+        const thibaultTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_THIBAULT, "timeslots-thibault.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+
+        setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_PERKINS)}...`);
+        const perkinsTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_PERKINS, "timeslots-perkins.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+
+        const timeslotsEvents = ([...longuealleeTimeslotsEvents, ...thibaultTimeslotsEvents, ...perkinsTimeslotsEvents]);
+        setEvents([...parsedGameEvents, ...parsedPracticesEvents, ...timeslotsEvents]);
 
         setLoadingMessage("Chargement du calendrier...");
         setFilteredEvents([...parsedGameEvents, ...parsedPracticesEvents]
@@ -65,15 +81,21 @@ function App() {
   // When a venue is checked or unchecked
   useEffect(() => {
     setFilteredEvents(events.filter(e => (!isVisibleLongueAllee ? e.venue != Consts.VENUE_LONGUEALLEE : e)
+      && (!isVisibleLongueAlleeTimeslot ? e.venue != Consts.VENUE_LONGUEALLEE_TIMESLOT : e)
       && (!isVisibleThibault ? e.venue != Consts.VENUE_THIBAULT : e)
+      && (!isVisibleThibaultTimeslot ? e.venue != Consts.VENUE_THIBAULT_TIMESLOT : e)
       && (!isVisiblePerkins ? e.venue != Consts.VENUE_PERKINS : e)
+      && (!isVisiblePerkinsTimeslot ? e.venue != Consts.VENUE_PERKINS_TIMESLOT : e)
       && (!isVisiblePerkinsCage ? e.venue != Consts.VENUE_PERKINSCAGE : e)
       ));
   }, [
     isVisibleLongueAllee,
     isVisibleThibault,
     isVisiblePerkins,
-    isVisiblePerkinsCage
+    isVisiblePerkinsCage,
+    isVisibleLongueAlleeTimeslot,
+    isVisibleThibaultTimeslot,
+    isVisiblePerkinsTimeslot
   ]);
 
   useEffect(() => {
@@ -230,23 +252,46 @@ function App() {
             </Button>
 
           </div>
-          <div className="venue-group-simple">
-             <FormControlLabel label="Longue-Allée" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleLongueAllee(e.target.checked)}
-              sx={{ color: Consts.COLOR_LONGUEALLEE, '&.Mui-checked': { color: Consts.COLOR_LONGUEALLEE, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Thibault" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisibleThibault(e.target.checked)}
-              sx={{ color: Consts.COLOR_THIBAULT, '&.Mui-checked': { color: Consts.COLOR_THIBAULT, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Perkins" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisiblePerkins(e.target.checked)}
-            sx={{ color: Consts.COLOR_PERKINS, '&.Mui-checked': { color: Consts.COLOR_PERKINS, class: 'checkbox-venue-checked' } }} />}
-          />
-          <FormControlLabel label="Perkins (cage)" className="checkbox-venue"
-            control={<Checkbox defaultChecked onChange={(e) => setIsVisiblePerkinsCage(e.target.checked)}
-            sx={{ color: Consts.COLOR_PERKINSCAGE, '&.Mui-checked': { color: Consts.COLOR_PERKINSCAGE, class: 'checkbox-venue-checked' } }} />}
-          />
+          <div className="venue-group">
+            <div className="venue-name">Longue-Allée</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleLongueAllee(e.target.checked)}
+              sx={{ color: Consts.COLOR_LONGUEALLEE, '&.Mui-checked': { color: Consts.COLOR_LONGUEALLEE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleLongueAlleeTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_LONGUEALLEE, '&.Mui-checked': { color: Consts.COLOR_LONGUEALLEE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">Thibault</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisibleThibault(e.target.checked)}
+              sx={{ color: Consts.COLOR_THIBAULT, '&.Mui-checked': { color: Consts.COLOR_THIBAULT, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisibleThibaultTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_THIBAULT, '&.Mui-checked': { color: Consts.COLOR_THIBAULT, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          <div className="venue-group">
+            <div className="venue-name">Perkins</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisiblePerkins(e.target.checked)}
+              sx={{ color: Consts.COLOR_PERKINS, '&.Mui-checked': { color: Consts.COLOR_PERKINS, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox onChange={(e) => setIsVisiblePerkinsTimeslot(e.target.checked)}
+              sx={{ color: Consts.COLOR_PERKINS, '&.Mui-checked': { color: Consts.COLOR_PERKINS, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event_available</span></>}
+            />
+          </div>
+          
+          <div className="venue-group">
+            <div className="venue-name">Perkins (cage)</div>
+            <FormControlLabel label="" className="checkbox-venue"
+              control={<><Checkbox defaultChecked onChange={(e) => setIsVisiblePerkinsCage(e.target.checked)}
+              sx={{ color: Consts.COLOR_PERKINSCAGE, '&.Mui-checked': { color: Consts.COLOR_PERKINSCAGE, class: 'checkbox-venue-checked' } }} /><span className="material-icons-outlined">event</span></>}
+            />
           </div>
         </FormGroup>
       </div>

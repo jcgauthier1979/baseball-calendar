@@ -71,3 +71,23 @@ export function dateMonthStart(date: Date): Date {
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
   return new Date(`${year}-${month}-01T00:00:00.000-04:00`);
 }
+
+export function getCsvDate(rawDate: string) : string {
+  if (rawDate.includes("/")) {
+    // Convert
+    rawDate = `${rawDate.substring(6, 10)}-${rawDate.substring(3, 5)}-${rawDate.substring(0, 2)}`
+  }
+  return  rawDate;
+}
+
+export function removeFirstLine(text: string): string {
+  const firstNewlineIndex = text.indexOf('\n');
+
+  if (firstNewlineIndex === -1) {
+    // If no newline character is found, the string has only one line or is empty
+    return ''; 
+  } else {
+    // Return the string starting from the character after the first newline
+    return text.slice(firstNewlineIndex + 1);
+  }
+}
