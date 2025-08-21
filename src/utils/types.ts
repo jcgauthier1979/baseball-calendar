@@ -23,7 +23,7 @@ export type TimeSlotCsvRow = {
   Venue: string;
   "Event Type": string;
   Identifier: string;
-  Organisation: string;
+  Organization: string;
   "Secondary Organization": string
   Schedule: string;
   Category: string;

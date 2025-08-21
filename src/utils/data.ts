@@ -119,6 +119,8 @@ export async function loadVenueTimeslots(venueName: string, fileName: string, fi
     throw new Error(parsed.errors.map(e => e.message).join(', '));
   }
 
+  parsed.data = parsed.data.filter(r => r.Organization == Consts.ORGANIZATION);
+
   const parsedTimeslotsItems : Types.CalendarEvent[] = parsed.data.map((row, index) => {
     const itemDate = Helpers.getCsvDate(row.Date);
     const start = new Date(`${itemDate}T${row["Start Time"]}:00`);
