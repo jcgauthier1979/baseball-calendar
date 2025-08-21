@@ -43,6 +43,11 @@ export function filterVenue(name : string) {
     name = name.substring(pos + 5);
   }
 
+  // Custom
+  name = name.replace(" - Terrain Longue-Allée", "");
+  name = name.replace(" - Terrain Thibault", "");
+  name = name.replace(" - Terrain J. A. Perkins", "");
+
   // Remove timeslot suffix
   name = name.replace(Consts.TIMESLOT_EVENT_TYPE, "");
   return name;

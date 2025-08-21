@@ -7,7 +7,7 @@ export const GAME_EVENT_TYPE : string = "game";
 export const PRACTICE_EVENT_TYPE : string = "practice";
 export const TIMESLOT_EVENT_TYPE : string = "timeslot";
 export const APP_PATH : string = import.meta.env.VITE_APP_PATH;
-export const ORGANIZATION : string = "ASSOCIATION BASEBALL AMATEUR DE HULL";
+export const ORGANIZATION : string = "ASSOCIATION DE BASEBALL AMATEUR DE VAL-DES-MONTS";
 
 export const COLOR_GAME: string ="#fefefe";
 export const COLOR_PRACTICE: string ="#e6f2ff";
@@ -27,12 +27,21 @@ export const VENUE_THIBAULT: string = "Parc Thibault - Terrain Thibault";
 export const VENUE_PERKINS: string = "Parc J. A. Perkins - Terrain J. A. Perkins";
 export const VENUE_PERKINSCAGE: string = "Parc J. A. Perkins - Cage";
 
+export const VENUE_LONGUEALLEE_TIMESLOT: string = VENUE_LONGUEALLEE + TIMESLOT_EVENT_TYPE;
+export const VENUE_THIBAULT_TIMESLOT: string = VENUE_THIBAULT + TIMESLOT_EVENT_TYPE;
+export const VENUE_PERKINS_TIMESLOT: string = VENUE_PERKINS + TIMESLOT_EVENT_TYPE;
+export const VENUE_PERKINSCAGE_TIMESLOT: string = VENUE_PERKINSCAGE + TIMESLOT_EVENT_TYPE;
+
 export const VENUE_CLASS = new Map<string, string>(
     [
       [VENUE_LONGUEALLEE, "venue-blue"],
+      [VENUE_LONGUEALLEE_TIMESLOT, "venue-blue"],
       [VENUE_THIBAULT, "venue-green"],
+      [VENUE_THIBAULT_TIMESLOT, "venue-green"],
       [VENUE_PERKINS, "venue-purple"],
+      [VENUE_PERKINS_TIMESLOT, "venue-purple"],
       [VENUE_PERKINSCAGE, "venue-red"],
+      [VENUE_PERKINSCAGE_TIMESLOT, "venue-red"],
       ["", "venue-default"],
     ]
   );
@@ -40,9 +49,13 @@ export const VENUE_CLASS = new Map<string, string>(
   export const VENUE_COLORS = new Map<string, string>(
     [
       [VENUE_LONGUEALLEE, COLOR_LONGUEALLEE],
+      [VENUE_LONGUEALLEE_TIMESLOT, COLOR_LONGUEALLEE],
       [VENUE_THIBAULT, COLOR_THIBAULT],
+      [VENUE_THIBAULT_TIMESLOT, COLOR_THIBAULT],
       [VENUE_PERKINS, COLOR_PERKINS],
+      [VENUE_PERKINS_TIMESLOT, COLOR_PERKINS],
       [VENUE_PERKINSCAGE, COLOR_PERKINSCAGE],
+      [VENUE_PERKINSCAGE_TIMESLOT, COLOR_PERKINSCAGE],
       ["", "#000"],
     ]
   );
