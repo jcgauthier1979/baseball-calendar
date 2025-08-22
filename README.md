@@ -1,15 +1,15 @@
 # baseball-calendar
 Simple baseball calendar to display games, practices and time slots exported from Spordle Play. It can also be used for other sports!
 
-## Why this project exist
+## Why this project exists
 
-As of the start of the 2025 baseball season, one feature was not yet available in Spordle Play: a global calendar with events of all venues used by a sport association. This is a mission critical view on information. It would save a ton of time for coaches and schedulers to find available time slots for practices and rescheduled games. For venues shared across multiple associations or leagues, it becomes even more difficult to find that information.
+As of the start of the 2025 baseball season, one feature was not yet available in Spordle Play: a public global calendar with events of all venues used by a sport association. This is a mission critical view on information. It would save a ton of time for coaches and schedulers to find available time slots for practices and rescheduled games. For venues shared across multiple associations or leagues, it becomes even more difficult to find that information.
 
 The goal of this project is to fill in that gap. Eventually, Spordle Play should have the equivalent views and features. This project could still be used to display that information in a separate scope (for example your own Website) unless it eventually becomes available through a public API integration.
 
 ## Getting started
 
-This is a React 19 project using Typescript.
+This is a [React 19](https://react.dev/) Typescript project using [Vite 6](https://vite.dev/) framework.
 
 - To run locally:
   -  npm run dev
@@ -37,7 +37,13 @@ You can select to display/hide:
 ### Colors, text, etc
 
 - utils/consts.ts
+  - ORGANIZATION: Update the value to you local organization name found in the games and practives CSV export files.
+  - COLOR_*: Add, remove or update venue colors.
+  - VENUE_*: Add, remove or update venues.
+  - etc.
 - calendar.css
+  - .venue[COLOR]: Add, remove or update venue colors.
+  - etc.
 
 ### Venues
 
@@ -62,21 +68,18 @@ In order for your calendar to stay up to date, the export of games and practices
 
 *Note: You must have the required set of scheduler role or permissions.*
 
-Time slots is an optional feature of the calendar and is more complex to export from Spordle Play since there is currently no option to do so from the Website.
+Time slots is an optional feature of the calendar. This uses a Spordle Play feature that is still in beta, the following instructions may not be accurate.
 
-1. In Spordle Play, go to Venues.
-2. Search for your venue and select it.
-3. Open the browser debugger (usually F12) and go to network tab.
-4. In the venue page, select your suface (some venue might have multiple ones).
-5. In the surface page grab your suface id from the URL. For example, in the following URL, **9999** is the surface ID: https://play.spordle.com/surfaces/9999/show.
-6. From the network debugger tab, search for the request starting with **https://play.spordle.com/api/arenaslots**.
-7. Copy the **Cookie**, **Authorization** and **User-Agent** header values.
-8. Using a software like Postman or Insomnia, create a get request with the full arenaslots URL. Change the limit to 500. Example: https://play.spordle.com/api/arenaslots?filter=%7B%22scope%22:%22Authorized%22,%22where%22:%7B%22and%22:[%7B%22arenaId%22:9999%7D,%7B%22seasonId%22:%229999%22%7D]%7D,%22order%22:[%22startTime+DESC%22,%22endTime+DESC%22],%22limit%22:500,%22skip%22:0%7D. You also need to add the **Cookie**, **Authorization** and **User-Agent** headers. Spordle Play API will reject request from unknown user agents.
-9. Execute the request and copy the JSON output.
-10. It can be a large payload and it contains a lot of properties that are not needed. You can use the Transform operation on https://jsoneditoronline.org/#left=local.mulire&right=local.cujali to pick which field to keep and sort the records. The required fields are: id, name, date, startTime, endTime, comments. You can sort by date.
-10. Save the output to a file named **timeslots-VENUE-NAME.json** in the **public** folder.
+1. In Spordle Play, go to Orginizations.
+2. Select your Organization.
+3. Click on the **Planner (Beta)** tab.
+4. In the planner page, under **Envent Types**, select **Slots**.
+5. Under **Fields**, select your field / venue.
+6. Select the **Start Date** and **End Date** that covers your full season calendar.
+7. Click on the **Export** button in the toolbar above.
+8. Rename the file to **timeslots-VENUE_NAME.csv** and copy it in the **public** folder.
 11. Update the App.tsx file to load this time slots file. Seach for code around **loadVenueTimeslots**.
-11. Repeat for each venue. Hint: You can duplicate your Postman or Insomnia request and only change the venue ID. The **Authorization** header value will expire at some point and will need to be updated. 
+11. Repeat for each venue. 
 
 Time slots are usually set at the beginning of the season and should not change. If they do, you can re-export them using the steps above, or manually edit the file for minor changes.
 

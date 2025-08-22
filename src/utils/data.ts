@@ -125,7 +125,7 @@ export async function loadVenueTimeslots(venueName: string, fileName: string, fi
     const itemDate = Helpers.getCsvDate(row.Date);
     const start = new Date(`${itemDate}T${row["Start Time"]}:00`);
     const end = new Date(`${itemDate}T${row["End Time"]}:00`);
-    const uid = row.Venue + `${itemDate}T${row["Start Time"]}:00` + `${itemDate}T${row["End Time"]}:00`;
+    const uid = venueName + `${itemDate}T${row["Start Time"]}:00` + `${itemDate}T${row["End Time"]}:00`;
 
     return {
       type: Consts.TIMESLOT_EVENT_TYPE,
