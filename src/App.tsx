@@ -51,21 +51,22 @@ function App() {
         var parsedPracticesEventsMap = new Map(parsedPracticesEvents.map(p => [p.uid, p]));
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_ALLEN)}...`);
-        const allenTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_ALLEN, "timeslots-allen.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const allenTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_ALLEN, "timeslots-allen.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_AYDELU)}...`);
-        const aydeluTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_AYDELU, "timeslots-aydelu.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const aydeluTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_AYDELU, "timeslots-aydelu.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_AYDELU_CAGE)}...`);
-        const aydeluCageTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_AYDELU_CAGE, "timeslots-aydelucage.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const aydeluCageTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_AYDELU_CAGE, "timeslots-aydelucage.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_MOUSSETTE)}...`);
-        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const moussetteTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_MOUSSETTE, "timeslots-moussette.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         setLoadingMessage(`Chargement des plages horaires de ${Helpers.filterVenue(Consts.VENUE_BOSCO)}...`);
-        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.json", uid, parsedGameEventsMap, parsedPracticesEventsMap);
+        const boscoTimeslotsEvents = await Data.loadVenueTimeslots(Consts.VENUE_BOSCO, "timeslots-stjeanbosco.csv", uid, parsedGameEventsMap, parsedPracticesEventsMap);
 
         const timeslotsEvents = ([...allenTimeslotsEvents, ...aydeluTimeslotsEvents, ...aydeluCageTimeslotsEvents, ...moussetteTimeslotsEvents, ...boscoTimeslotsEvents]);
+
         setEvents([...parsedGameEvents, ...parsedPracticesEvents, ...timeslotsEvents]);
 
         setLoadingMessage("Chargement du calendrier...");

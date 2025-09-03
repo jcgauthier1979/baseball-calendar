@@ -94,7 +94,7 @@ body {
 .loader {
     width: 48px;
     height: 48px;
-    border: 5px solid #FFF;
+    border: 5px solid rgb(250, 250, 250);
     border-bottom-color: #FF3D00;
     border-radius: 50%;
     display: inline-block;
@@ -305,6 +305,51 @@ body {
 overflow: inherit !important;
 }
 
+#footer {
+  display: block;
+  padding: 8px;
+  justify-content: center;
+}
+
+#footer .footer-header {
+  margin-bottom: 12px;
+}
+
+#footer .footer-link {
+  margin-left: 0;
+  margin-bottom: 12px;
+}
+
+#footer .ext-link {
+ color: #333;
+  font-weight: 600;
+  text-decoration: none;
+  background-color: #f1f1f1;
+  padding-left: 0;
+  padding-right: 8px;
+  padding-top: 4px;
+  border-radius: 5px;
+}
+
+@media only screen and (max-width: 768px) {
+}
+
+@media only screen and (min-width: 769px) {
+  #footer {
+    display: flex;
+  }
+
+  #footer .footer-link {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  #footer .ext-link {
+    padding-left: 8px;
+    padding-bottom: 4px;
+  }
+}
+
 @media only screen and (max-width: 992px) {
   #banner {
     min-height: 48px;
@@ -351,6 +396,7 @@ overflow: inherit !important;
     top: 49px;
     z-index: 1000;
   }
+
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
