@@ -119,7 +119,7 @@ export async function loadVenueTimeslots(venueName: string, fileName: string, fi
     throw new Error(parsed.errors.map(e => e.message).join(', '));
   }
 
-  parsed.data = parsed.data.filter(r => r.Organization == Consts.ORGANIZATION);
+  parsed.data = parsed.data.filter(r => r.Organization == Consts.ORGANIZATION || r.Organization == Consts.SECONDARY_ORGANIZATION);
 
   const parsedTimeslotsItems : Types.CalendarEvent[] = parsed.data.map((row, index) => {
     const itemDate = Helpers.getCsvDate(row.Date);
