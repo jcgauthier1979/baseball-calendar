@@ -1,5 +1,5 @@
-# baseball-calendar
-Simple baseball calendar to display games, practices and time slots exported from Spordle Play. It can also be used for other sports!
+# sport-calendar
+Simple sport calendar to display games, practices and time slots exported from Spordle Play.
 
 ## Why this project exists
 
